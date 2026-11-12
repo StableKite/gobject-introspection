@@ -1,0 +1,50 @@
+Description: Support both distutils compiler subprocess APIs in tests
+Author: Robolightning <irobolightning@gmail.com>
+Origin: https://bugs.debian.org/1149451
+Forwarded: no
+Last-Update: 2026-11-12
+
+--- a/tests/scanner/test_ccompiler.py
++++ b/tests/scanner/test_ccompiler.py
+@@ -82,7 +82,8 @@
+         except ImportError as e:
+             raise unittest.SkipTest(e)
+ 
+-        with patch.object(distutils.ccompiler.CCompiler, 'spawn') as spawn:
++        with patch.object(distutils.ccompiler.CCompiler, 'spawn') as spawn, \
++             patch.object(distutils.ccompiler.CCompiler, 'call', create=True) as call:
+             with Environ(environ):
+                 cc = CCompiler(compiler_name=compiler_name)
+                 # Avoid check if target is newer from source.
+@@ -90,8 +91,8 @@
+                 # Don't actually do anything.
+                 cc.compiler.dry_run = True
+                 cc.compile(pkg_config_cflags, cpp_includes, [source], init_sections)
+-        self.assertEqual(1, spawn.call_count)
+-        args, kwargs = spawn.call_args
++        self.assertEqual(1, spawn.call_count + call.call_count)
++        args, kwargs = spawn.call_args if spawn.call_count else call.call_args
+         return args[0]
+ 
+     def preprocess_args(self, environ={}, compiler_name=None,
+@@ -103,7 +104,8 @@
+         except ImportError as e:
+             raise unittest.SkipTest(e)
+ 
+-        with patch.object(distutils.ccompiler.CCompiler, 'spawn') as spawn:
++        with patch.object(distutils.ccompiler.CCompiler, 'spawn') as spawn, \
++             patch.object(distutils.ccompiler.CCompiler, 'call', create=True) as call:
+             with Environ(environ):
+                 cc = CCompiler(compiler_name=compiler_name)
+                 # Avoid check if target is newer from source.
+@@ -111,8 +113,8 @@
+                 # Don't actually do anything.
+                 cc.compiler.dry_run = True
+                 cc.preprocess(source, output, cpp_options)
+-        self.assertEqual(1, spawn.call_count)
+-        args, kwargs = spawn.call_args
++        self.assertEqual(1, spawn.call_count + call.call_count)
++        args, kwargs = spawn.call_args if spawn.call_count else call.call_args
+         return args[0]
+ 
+     @unittest.skip("Currently a Python build time compiler is used as the default.")
