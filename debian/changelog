@@ -1,0 +1,2453 @@
+gobject-introspection (1.86.0-6build1) resolute; urgency=medium
+
+  * No-change rebuild with Python 3.14 as default
+
+ -- Graham Inggs <ginggs@ubuntu.com>  Thu, 22 Jan 2026 20:49:14 +0000
+
+gobject-introspection (1.86.0-6) unstable; urgency=medium
+
+  * d/control: Build-depend on perl:native.
+    This fixes cross-building: for pod2man, we want the build
+    architecture's perl, not the host architecture's.
+  * Fix a typo in the 1.86.0-3 changelog entry: Debian 14 is forky,
+    not trixie. Thanks to Amr Ibrahim
+  * d/libgirepository1.0-dev.README.Debian: Mention deb-gir-tool(1)
+  * d/libgirepository1.0-dev.README.Debian: Clarify relevant distro
+    releases
+  * d/libgirepository1.0-dev.README.Debian: GStreamer now uses
+    /usr/lib/${DEB_HOST_MULTIARCH}/gir-1.0, too
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 03 Oct 2025 10:26:02 +0100
+
+gobject-introspection (1.86.0-5) unstable; urgency=medium
+
+  * deb-gir-tool: Fix refcounting of GOptionGroup
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 27 Sep 2025 23:59:48 +0100
+
+gobject-introspection (1.86.0-4) unstable; urgency=medium
+
+  * deb-gir-tool(1): Fix comment syntax
+  * deb-gir-tool(1): Indent examples consistently
+  * deb-gir-tool(1): Fix syntax of example involving dpkg-architecture
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 27 Sep 2025 23:45:31 +0100
+
+gobject-introspection (1.86.0-3) unstable; urgency=medium
+
+  * Add deb-gir-tool(1) to gobject-introspection.
+    This utility helps to work with other packages' GIR XML by locating
+    the actual files that implement a particular module.
+    In particular, it can be used by packages like rust-gtk4 during build.
+  * d/libgirepository-1.0-1.symbols.in: Update Build-Depends-Package.
+    Set Build-Depends-Package to libgirepository-1.0-dev,
+    and Build-Depends-Packages to that + libgirepository1.0-dev.
+  * d/libgirepository1.0-dev.README.Debian: Add advice on porting away.
+    libgirepository1.0-dev is not multiarch-friendly, and cannot be made
+    multiarch-friendly without breaking backward compatibility, so we
+    aim to phase it out during the Debian 14 (forky) development cycle.
+  * d/control: Describe libgirepository1.0-dev as deprecated
+  * d/tests/control: Update dependencies
+  * d/.gitignore: Update
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 27 Sep 2025 21:28:30 +0100
+
+gobject-introspection (1.86.0-2) unstable; urgency=medium
+
+  * Release to unstable
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Thu, 18 Sep 2025 14:55:11 -0400
+
+gobject-introspection (1.86.0-1) experimental; urgency=medium
+
+  [ Jeremy Bícha ]
+  * New upstream release
+
+  [ Simon McVittie ]
+  * d/cross-g-ir-tool.in: Don't rely on sysconfig.
+    During cross-compilation of some packages it is necessary to set
+    the environment variable _PYTHON_SYSCONFIGDATA_NAME, which alters
+    sysconfig to describe the host rather than build architecture,
+    meaning that it no longer has facts about the current interpreter.
+    (Closes: #1105149)
+  * Improve documentation in README.Debian:
+    - Simplify recommended gobject-introspection dependency to 1.80.
+      The previous recommendation was new in Debian 13 and Ubuntu 24.04,
+      but 1.80 is available in both of those releases too, so we can
+      recommend something shorter and easier to remember without losing
+      portability.
+    - Suggest a less intrusive workaround for #1060838/#1111001
+    - #1060907 in haskell-haskell-gi was fixed
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Sat, 13 Sep 2025 08:39:09 -0400
+
+gobject-introspection (1.84.0-1) unstable; urgency=medium
+
+  * New upstream release (functionally equivalent to 1.83.4)
+  * d/gbp.conf: Use upstream/1.84.x branch for trixie
+  * Standards-Version: 4.7.2 (no changes required)
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 17 Mar 2025 12:57:47 +0000
+
+gobject-introspection (1.83.4-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Sat, 08 Mar 2025 14:36:14 -0500
+
+gobject-introspection (1.83.2-2) unstable; urgency=medium
+
+  * Release to unstable
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Wed, 05 Mar 2025 20:26:13 -0500
+
+gobject-introspection (1.83.2-1) experimental; urgency=medium
+
+  [ Jeremy Bícha ]
+  * New upstream release
+  * Bump minimum meson
+
+  [ Simon McVittie ]
+  * d/rules: Pass build architecture CFLAGS, etc. when appropriate
+    deb-elf-get-needed-for-build should be built with the build
+    architecture's compiler flags.
+  * d/rules: Build deb-elf-get-needed-for-build unconditionally.
+    This helps QA tools to detect whether we're doing it right.
+  * d/salsa-ci.yml: Opt-in to being cross-built.
+    This package has a non-trivial cross-compilation setup which we should
+    verify in CI.
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Tue, 04 Mar 2025 12:55:46 -0500
+
+gobject-introspection (1.82.0-4) unstable; urgency=medium
+
+  * dh_girepository: Use the binary package version to generate deps.
+    The version of a binary package can be set dynamically at build-time
+    using dh_gencontrol; dh_girepository instead is using the static
+    source package version, which generates unsatisfiable dependencies
+    if the version is changed by dh_gencontrol, breaking installability.
+    Use ${binary:Version} which will be substituted with the actual
+    binary package version at a later time. (Closes: #1065726)
+
+ -- Alessandro Astone <alessandro.astone@canonical.com>  Thu, 09 Jan 2025 16:54:07 +0000
+
+gobject-introspection (1.82.0-3) unstable; urgency=medium
+
+  * d/control: Build-depend on python3-markdown without the :native
+    qualifier.
+    python3-markdown (>= 3.7-2) is Multi-Arch: foreign. apt considers
+    a Multi-Arch: foreign package to be a valid dependency resolution
+    for a dependency with the :native qualifier, but dpkg-checkbuilddeps
+    does not (see #1023438). (Closes: #1090228)
+  * d/rules: Tell blhc to ignore temporary modules used to gather
+    dependencies.
+    These appear in the build log because we're running dh_girepository in
+    verbose mode. It's OK that these temporary modules are linked without
+    using dpkg's default compiler flags for hardening and similar things,
+    because they are linked, passed to dh_shlibdeps to collect their
+    dependencies and then discarded: they are not included in any package.
+  * d/control: Remove unnecessary Build-Depends on libtool
+  * d/salsa-ci.yml: Add
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 16 Dec 2024 18:48:05 +0000
+
+gobject-introspection (1.82.0-2) unstable; urgency=medium
+
+  * Release to unstable
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 21 Sep 2024 12:58:21 +0100
+
+gobject-introspection (1.82.0-1) experimental; urgency=medium
+
+  [ Simon McVittie ]
+  * New upstream release
+  * d/control: Bump GLib dependency to 2.82.0 as per meson.build
+  * d/control: Add Breaks on older libglib-object-introspection-perl
+    (avoids: #1081701)
+  * d/control, d/rules, d/*-g-ir-tool.in:
+    Use cross-exe-wrapper instead of running qemu directly.
+    This avoids needing to hard-code knowledge of how to run qemu-user.
+    Because cross-exe-wrapper:i386 has the appropriate special case for
+    an amd64 native architecture, this also avoids needing to install
+    qemu-user when cross-compiling i386 packages on amd64
+    (similar to #1070773).
+  * Merge packaging from unstable
+    - d/p/giscanner-remove-dependency-on-distutils.msvccompiler.patch:
+      Drop patch, included in 1.81.4-1
+    - d/gbp.conf: Revert changes
+  * d/control: Fix a typo in gobject-introspection Description
+
+  [ Niels Thykier ]
+  * dh_girepository: Use Dh_Lib.pm's dpkg_architecture_value instead of
+    calling an external dpkg-architecture command
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 14 Sep 2024 17:51:40 +0100
+
+gobject-introspection (1.81.4-1) experimental; urgency=medium
+
+  * New upstream prerelease
+  * d/copyright: Update
+  * d/p/giscanner-Be-more-thorough-about-applying-Wl-no-as-needed.patch:
+    Drop patch, applied upstream
+  * d/p/meson-Only-generate-typelib-and-install-win32-files-on-wi.patch:
+    Refresh patch
+  * Standards-Version: 4.7.0 (no changes required)
+  * Update Lintian overrides
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 06 Sep 2024 11:50:22 +0100
+
+gobject-introspection (1.80.1-4) unstable; urgency=high
+
+  * d/gbp.conf: Branch for testing/unstable.
+    We have 1.81.x in experimental, but it isn't clear whether there is
+    going to be a 1.82.0 for GNOME 47.
+  * d/p/giscanner-remove-dependency-on-distutils.msvccompiler.patch:
+    Backport patch from 1.81.2 to fix regression with setuptools 74.x
+  * Set high urgency because this is breaking the build of dependent
+    packages
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 10 Sep 2024 11:29:30 +0100
+
+gobject-introspection (1.80.1-3) unstable; urgency=medium
+
+  * d/p/giscanner-Be-more-thorough-about-applying-Wl-no-as-needed.patch:
+    Add proposed patch to apply -Wl,--no-as-needed more thoroughly.
+    This avoids build regressions in libkkc and ibus-anthy, which pass
+    libraries to `g-ir-scanner --library` that do not contain any functions
+    directly called by the dumper.
+    (Closes: #1060951, #1060953) (Mitigates: #1071116)
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 14 May 2024 18:42:37 +0100
+
+gobject-introspection (1.80.1-2) unstable; urgency=medium
+
+  * Release to unstable
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Sat, 04 May 2024 12:39:14 -0400
+
+gobject-introspection (1.80.1-1) experimental; urgency=medium
+
+  [ Jeremy Bícha ]
+  * New upstream release
+  * Drop time_t and off_t patches: applied in new release
+
+  [ Simon McVittie ]
+  * d/copyright: Remove unused license paragraph
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Mon, 01 Apr 2024 10:28:10 -0400
+
+gobject-introspection (1.80.0-2) experimental; urgency=medium
+
+  * Merge packaging changes from unstable:
+    - d/p/girparser-Don-t-assume-sizeof-size_t-sizeof-void.patch,
+      d/p/girparser-Make-sizes-in-integer_aliases-more-obviously-co.patch,
+      d/p/girparser-Allow-time_t-off_t-etc.-to-appear-in-GIR-XML.patch,
+      d/p/giscanner-treat-time_t-and-off_t-as-standalone-types.patch,
+      d/p/tests-fix-the-tests-after-time_t-and-off_t-are-standalone.patch,
+      d/p/tests-Add-coverage-for-off_t.patch:
+      Add patches from upstream git to fix handling of time_t and off_t.
+      Thanks to Shuyu Liu (Closes: #1066032)
+    - d/emulated-g-ir-tool.in: Fix qemu-user invocation.
+      Previously, this only worked on systems that could run the tool
+      directly via binfmt_misc.
+  * d/control: libgirepository1.0-dev requires GLib 2.80 data.
+    Now that we are not building gir1.2-glib-2.0 locally, we shouldn't
+    use ${binary:Version} to refer to it any more. Thanks: lintian
+  * d/control: Bump required GLib version to 2.80.0.
+    Now that GLib 2.80.0 is available, nobody should be using its
+    development snapshots 2.79.x.
+  * d/copyright: Update
+  * Add a g-ir-inspect(1) man page
+  * d/source/lintian-overrides: Add overrides for nogir profile name
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 18 Mar 2024 23:39:13 +0000
+
+gobject-introspection (1.80.0-1) experimental; urgency=medium
+
+  * New upstream stable release
+  * Merge packaging changes from unstable
+    - dh_girepository: Avoid generating a dependency on
+      libgirepository1.0-dev (Closes: #1065332)
+    - Use host g-ir-compiler (possibly wrapped with qemu-user) when
+      cross-compiling, since the build architecture g-ir-compiler has
+      built-in knowledge of type sizes which is not necessarily correct
+      for the host architecture (Closes: #1066900)
+    - d/control: Make g-i explicitly depend on g-i-bin, not just via a
+      virtual package, as requested by Matthias Klose on #1064369.
+      This might possibly help autopkgtest to provide better pinning.
+    - d/rules: Base the choice of -Dbuild_introspection_data on
+      whether we are building gir1.2-*, not the nogir build profile
+      specifically
+  * Refresh patch series
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 15 Mar 2024 15:32:45 +0000
+
+gobject-introspection (1.79.1-1) experimental; urgency=medium
+
+  * New upstream release
+  * Bump minimum glib to 2.79.0
+  * Add gir1.2-glib-2.0-dev to Build-Depends
+  * Drop gir1.2-glib-2.0 & gir1.2.0-glib-dev: Now built by glib2.0
+  * Drop 3 patches applied in new release
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Mon, 19 Feb 2024 06:31:08 -0500
+
+gobject-introspection (1.78.1-19) unstable; urgency=medium
+
+  * d/emulated-g-ir-tool.in: Fix qemu-user invocation.
+    Previously, this only worked on systems that could run the tool
+    directly via binfmt_misc.
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 18 Mar 2024 14:26:54 +0000
+
+gobject-introspection (1.78.1-18) unstable; urgency=medium
+
+  * d/p/girparser-Don-t-assume-sizeof-size_t-sizeof-void.patch,
+    d/p/girparser-Make-sizes-in-integer_aliases-more-obviously-co.patch,
+    d/p/girparser-Allow-time_t-off_t-etc.-to-appear-in-GIR-XML.patch,
+    d/p/giscanner-treat-time_t-and-off_t-as-standalone-types.patch,
+    d/p/tests-fix-the-tests-after-time_t-and-off_t-are-standalone.patch,
+    d/p/tests-Add-coverage-for-off_t.patch:
+    Add patches from upstream git to fix handling of time_t and off_t.
+    Thanks to Shuyu Liu (Closes: #1066032)
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 18 Mar 2024 12:49:20 +0000
+
+gobject-introspection (1.78.1-17) unstable; urgency=medium
+
+  [ Simon McVittie, Jeremy Bícha ]
+  * Add a nogir build profile
+
+  [ Simon McVittie ]
+  * d/control: Correct a misleading comment.
+    It's g-ir-scanner, not g-ir-compiler, that runs the dumper executable.
+  * Use host-architecture g-ir-compiler, etc. when cross-compiling.
+    When setting up the cross wrappers for g-ir-compiler, etc. I had
+    assumed that g-ir-compiler was a simple transformation from
+    GIR XML into binary, which varied only by its endianness. Unfortunately,
+    it is not: it also transforms abstract types such as size_t into
+    equivalent fixed-size types such as guint64, which requires knowledge
+    of the size of each type.
+    Instead of running the build architecture g-ir-compiler and
+    telling it to use the host architecture search path, install upstream's
+    g-ir-compiler etc. into ${pkglibdir}, and set up cross wrappers
+    that will automatically detect whether we can run them directly or
+    whether we must use qemu-user. We already had logic for this for the
+    dumper executable that is run by g-ir-scanner, which is always a
+    host-architecture binary.
+    This involves running qemu more often, but does have the side benefit
+    that we no longer require the build and host endianness to be the same,
+    because everything that interacts the typelib is now a host binary
+    (possibly running under emulation). (Closes: #1066900)
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 15 Mar 2024 13:14:58 +0000
+
+gobject-introspection (1.78.1-16) unstable; urgency=medium
+
+  * d/control, d/gbp.conf, d/watch: Branch for 1.78.x
+  * dh_girepository: Avoid generating a dependency on
+    libgirepository1.0-dev.
+    We don't want other -dev packages to depend on libgirepository1.0-dev
+    if we can help it, because it isn't Multi-Arch co-installable,
+    even though when installed it provides the highest-precedence
+    version of GLib-2.0.gir (as a symlink to the real file). Instead,
+    we would prefer dependent packages to depend on the package that
+    really contains GLib-2.0.gir, which is gir1.2-glib-2.0-dev.
+    Handle this generically so that if there are other pairs of packages
+    in a similar situation, they will also be covered. (Closes: #1065332)
+  * d/control: Make g-i explicitly depend on g-i-bin, not just via a
+    virtual package, as requested by Matthias Klose on #1064369.
+    This might possibly help autopkgtest to provide better pinning.
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 03 Mar 2024 16:35:05 +0000
+
+gobject-introspection (1.78.1-15) unstable; urgency=medium
+
+  * policy: Clarify when (not) to use the nogir build-profile.
+    We don't need to add it indiscriminately to every package with
+    GIR; it's only useful for packages that are either involved in
+    bootstrapping, or difficult to cross-compile any other way, or being
+    used as a harmless example of how to use this build profile with a
+    particular build system.
+  * policy: Consider the nogir build-profile to be stable.
+    There didn't seem to be any objection to it on debian-devel.
+  * Release to unstable, allowing experimental to be used for 1.79.x.
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 09 Feb 2024 11:38:46 +0000
+
+gobject-introspection (1.78.1-14) experimental; urgency=medium
+
+  * Replace exact version matches by gir1.2-freedesktop(-dev) with
+    a minimum.
+    As with gir1.2-girepository-2.0(-dev), we need these to depend
+    on gir1.2-glib-2.0 (>= 1.78.x) instead of (= 1.78.x), so that
+    src:glib2.0 can take over those binary packages gracefully. Instead
+    of hard-coding the dependencies, put the ${gir:Depends} back, and
+    postprocess the output of dh_girepository instead of ignoring it.
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 20 Jan 2024 15:58:58 +0000
+
+gobject-introspection (1.78.1-13) experimental; urgency=medium
+
+  * gir1.2-girepository-2.0{,-dev}: Don't force GLib to match exactly.
+    src:glib2.0 is going to take over the gir1.2-glib-2.0{,-dev}
+    package names in 2.79.x, but it will have its
+    own gir1.2-girepository-3.0{,-dev}. To keep our
+    gir1.2-girepository-2.0{,-dev} installable, relax their dependencies
+    to not be in lockstep.
+    This would not usually be allowed, but GLib-2.0 and the other
+    affected typelibs are conceptually part of glib2.0 anyway - they
+    were only built by this source package up until now to avoid circular
+    dependencies.
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 19 Jan 2024 18:55:42 +0000
+
+gobject-introspection (1.78.1-12) unstable; urgency=medium
+
+  * d/rules: Tell dh_python3 to look for private giscanner modules.
+    Previously we were only doing this for the gobject-introspection
+    binary package, which was correct before 1.78.1-7, but regressed when
+    we moved the giscanner implementation to g-i-bin. (Closes: #1061141)
+  * d/control: (Build-)Depend on python3-setuptools.
+    This provides a python3.12-friendly implementation of the deprecated
+    distutils API, which (for the moment) g-ir-scanner still needs.
+  * d/p/tests-Do-not-use-PYTHONPATH-to-import-giscanner.patch:
+    Add patch from upstream to fix FTBFS with python3.12 as default.
+    Thanks to Graham Inggs, Matthias Klose (Closes: #1061143)
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 19 Jan 2024 13:50:09 +0000
+
+gobject-introspection (1.78.1-11) unstable; urgency=medium
+
+  * d/control: gobject-introspection Depends on libglib2.0-dev.
+    Otherwise, pkg-config lookup for gobject-introspection-1.0 will fail,
+    which in turn makes Meson's gnome.generate_gir() fail. In practice,
+    this probably only affects glib2.0 itself, because every other
+    library that generates GIR XML is very likely to depend on GLib.
+  * d/rules: Consistently use architecture comparison to detect cross-builds.
+    This is a little more user-friendly: if a developer forgets to set
+    DEB_BUILD_PROFILES=cross, but the required cross-tools happen to be
+    installed anyway, the build will still work.
+  * GObject-Introspection mini-policy:
+    - Link to a list of packages known not to support multiarch GIR XML
+    - Add underlines below section headings for better clarity
+    - Clarify advice to use ${gir:Depends}, ${gir:Provides}
+    - Packages should now depend on gir1.2-glib-2.0-dev, etc. if needed.
+      -dev packages that use ${gir:Depends} will automatically
+      start following this advice when they are rebuilt with
+      gobject-introspection 1.78.1-7 or later.
+    - Packages that only build typelibs need the same Build-Depends
+      as packages that build GIR XML
+    - Relax the requirement to depend on libgirepository1.0-dev
+    - Clarify that Build-Depends(-Arch,-Indep) may be conditional
+    - Provide a draft of the nogir build-profile, for future discussion
+      on -devel
+  * README.Debian:
+    - Move to gobject-introspection.
+      This should make it a bit more discoverable.
+    - Mention packages that still require libgirepository1.0-dev
+    - Add a note about indirect gir1.2-*-dev dependencies
+    - Minor clarifications
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 17 Jan 2024 14:42:22 +0000
+
+gobject-introspection (1.78.1-10) unstable; urgency=medium
+
+  * d/control: g-i Depends on g-i-bin for same kernel, not just same endian.
+    If the host and build architecture are different kernels
+    (cross-compiling for Hurd on Linux or vice versa) then qemu-user is
+    not going to work. In practice qemu-user is only available on Linux
+    anyway, so this restricts us to cross-compiling for Linux on Linux,
+    or native builds.
+  * d/control: Make g-i-bin Multi-Arch: foreign.
+    The release team's migration tools now handle the case where :any
+    appears on a dependency on a virtual package name that is provided by
+    a Multi-Arch: allowed real package (see #1059929), but it's simpler
+    if we don't have to rely on that subtlety. (Helps: #1030223)
+  * d/cross-g-ir-tool.in: Autodetect whether we can run host binaries.
+    Instead of assuming that we need qemu-user to run anything whose
+    architecture does not match Python's, run a small test program from
+    the host architecture and see what happens. This means we'll use a
+    configured binfmt implementation if any, falling back to qemu-user
+    if none. (Helps: #1030223)
+  * Rename Debian-specific elf-get-needed tool to deb-elf-get-needed.
+    This provides a better indication that it is not part of the upstream
+    API of the package.
+  * Release to unstable
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 14 Jan 2024 19:33:20 +0000
+
+gobject-introspection (1.78.1-9) experimental; urgency=medium
+
+  * d/gobject-introspection-bin.README.Debian: Fix cross-file name
+  * d/control: Convert Breaks/Replaces to a concrete version.
+    During development of the changes that were released as 1.78.1-7,
+    I used ${binary:Version} for these, but now that we've released that
+    version we can use a more concrete cutoff point.
+  * Provide the libgirepository-1.0.so symlink in gobject-introspection
+    (which is depended on by libgirepository-1.0-dev), and not directly in
+    libgirepository-1.0-dev.
+    This is a workaround for a Meson issue,
+    https://github.com/mesonbuild/meson/issues/12680, in which the
+    dumper binary is unnecessarily linked to libgirepository-1.0 even
+    if no such dependency was declared.
+    The C headers for the library are still in libgirepository-1.0-dev,
+    to ensure that packages that use the library (like gjs and pygobject)
+    are still forced to build-depend on libgirepository-1.0-dev (or
+    the older libgirepository1.0-dev).
+  * README.Debian: Adjust Meson advice
+  * d/control: Canonicalize Uploaders field (wrap-and-sort -at)
+  * d/control: Canonicalize order of Build-Depends (wrap-and-sort -at)
+  * d/*.install: Canonicalize order of file lists (wrap-and-sort -at)
+  * d/tests: Canonicalize order of dependencies (wrap-and-sort -at)
+  * d/control: Canonicalize order of dependencies etc. (wrap-and-sort -at)
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 02 Jan 2024 14:53:46 +0000
+
+gobject-introspection (1.78.1-8) experimental; urgency=medium
+
+  * Re-upload with binaries included
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 30 Dec 2023 00:40:32 +0000
+
+gobject-introspection (1.78.1-7) experimental; urgency=medium
+
+  * Split GIRepository-2.0 into its own binary package.
+    During the GNOME 46 (GLib 2.79.x) cycle, gir1.2-glib-2.0 will need
+    to be taken over by the glib2.0 source package. However, GLib 2.79.x
+    does not build GIRepository-2.0.typelib; instead, it has a version of
+    the same library with API/ABI changes, GIRepository-3.0.typelib. As
+    a result, we need to separate these two.
+    Newer uploads of gjs and pygobject have made sure to pull in the
+    GIRepository-2.0 typelib. Add Breaks on versions that were too old
+    to have that dependency.
+    Cinnamon's cjs also uses GIRepository, but only in the implementation
+    of functionality that Cinnamon doesn't actually appear to be using
+    (imports.package), so no Breaks are needed for that.
+  * Split GIR XML out from libgirepository1.0-dev.
+    This introduces new binary packages gir1.2-freedesktop-dev,
+    gir1.2-glib-2.0-dev and gir1.2-girepository-2.0-dev.
+    gir1.2-glib-2.0{,-dev} are likely to be taken over by the glib2.0
+    source package in a future release (as part of GNOME 46), so use
+    greater-than-or-equal dependencies instead of lockstep dependencies
+    for those.
+    To allow gir1.2-glib-2.0-dev to be Multi-Arch: same, install its
+    GIR XML into the architecture-specific location. Some consumers of
+    GIR XML do not yet search that location, so provide a symlink in
+    libgirepository1.0-dev which provides backward compatibility.
+    (Closes: #859013)
+  * Move native binaries to gobject-introspection-bin.
+    As an implementation detail, the upstream-provided executables are
+    now in gobject-introspection-bin. These unprefixed versions continue
+    to use appropriate search paths for the native (build) architecture.
+    The architecture-prefixed versions continue to be provided by the
+    gobject-introspection package; that package is now Multi-Arch: same,
+    allowing the prefixed versions to be used while cross-compiling.
+    Because binary typelibs are in an endian-dependent format, the build
+    and host architectures must be of the same endianness, which is
+    achieved by using a virtual package. In practice all Debian release
+    architectures except s390x are little-endian, and so are many ports
+    architectures, so this will only be a practical concern for s390x
+    and older ports architectures like powerpc and m68k.
+    The gobject-introspection package now includes the pkg-config metadata
+    gobject-introspection-1.0.pc, which is how Autotools and Meson build
+    systems normally discover the command-line tools. The few packages
+    that link to the libgirepository-1.0 shared library (mostly language
+    bindings like gjs and python3-gi) will still need to build-depend
+    on its -dev package in addition to gobject-introspection.
+    (Helps: #801672, #905715)
+  * Split shared library development files into libgirepository-1.0-dev.
+    libgirepository1.0-dev has historically had three roles: it's the
+    equivalent of libc6-dev for the libgirepository-1.0 shared library, it
+    also pulls in the gobject-introspection CLI tools, and it also pulls
+    in (or historically, contained) the GIR XML for basic libraries.
+    Now those three roles are taken over by libgirepository-1.0-dev,
+    gobject-introspection and gir1.2-*-dev, respectively, leaving
+    libgirepository1.0-dev as essentially a metapackage.
+    libgirepository1.0-dev is not Multi-Arch: same and cannot become
+    Multi-Arch: same without breaking backwards compatibility, but all
+    three of its replacements are.
+    The one unique piece of functionality that is still provided by
+    libgirepository1.0-dev is that it makes GLib-2.0.gir available in
+    the legacy location /usr/share/gir-2.0/GLib-2.0.gir, which makes it
+    available to older code-generation tools that have not been updated
+    to read from the architecture-specific directory.
+    (Closes: #801672, #905715)
+  * dh_girepository: Generate dependencies for GIR from this source package.
+    Now that gir1.2-glib-2.0-dev, gir1.2-girepository-2.0-dev and
+    gir1.2-freedesktop-dev are separate, Multi-Arch: same packages,
+    there's no barrier to generating dependencies on them.
+  * d/tests: Test both libgirepository-1.0-dev and libgirepository1.0-dev
+  * Add a Lintian override for gir1.2-glib-2.0-dev's large /usr/share
+  * Add a README.Debian describing how to make packages containing GIR XML
+    and/or typelibs cross-compilable
+  * Upload to experimental for NEW processing, and to allow QA tools to
+    detect any remaining file-overwrite issues
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 29 Dec 2023 22:25:28 +0000
+
+gobject-introspection (1.78.1-6) unstable; urgency=medium
+
+  * dh_girepository:
+    - Fix generation of GIR XML -> typelib dependency
+    - Don't generate Depends for GIR XML included by private GIR XML.
+      It's somewhat common for packages like gnome-shell and cinnamon
+      to ship GIR XML in a private location in a non-"-dev"-suffixed
+      package. In such cases, development/compilation is not the primary
+      purpose of the package, so we don't want to force a dependency
+      on the -dev package that contains an included GIR XML file. For
+      example, it would be inappropriate to force cinnamon to depend on
+      libmuffin-dev, or gnome-shell on libmutter-dev.
+      (Helps: #1057391)
+  * policy:
+    - Relax naming and dependency requirements for private GIR XML.
+      As discussed on #1057391, this mini-policy is primarily for public
+      GIR XML and public typelibs. (Helps: #1057391)
+    - Cite another reason why public GIR XML cannot be
+      Architecture: all
+    - Replace an outdated introductory paragraph
+  * d/control, d/rules: Use a shorter substvar name for libffiN
+  * d/rules: Pass all dpkg-architecture variables to d/extra-substvars.py
+  * d/extra-substvars.py: Generate substvars for host architecture information
+  * d/elf-get-needed: Add a tool to read dependencies' SONAMEs
+  * d/rules, d/control: Don't run gtk-doc for Architecture: any builds
+  * d/control: g-i Depends on ${perl:Depends}, for dh_girepository
+  * d/copyright: Update
+  * d/control, d/tests: Depend on pkgconf in preference to pkg-config
+  * d/control: gobject-introspection Depends on pkgconf
+  * d/p/scanner-If-using-libtool-with-a-wrapper-use-libtool-mode-.patch:
+    Add a patch to improve use of --use-binary-wrapper with libtool.
+    This will help to make a future version of gobject-introspection able
+    to cross-compile typelibs.
+  * d/p/Drop-GIO-from-libgirepository-s-dependencies.patch:
+    Add patch from upstream to avoid depending on GIO in type-dumping tool.
+    This is needed for forward-compatibility with GLib 2.79.x.
+  * Install GLib-2.0.gir into multiarch location, with a compatibility
+    symlink.
+    This will help to start the process of updating dependent packages
+    to be able to load GLib-2.0.gir and other GIR XML from the multiarch
+    location. (Helps: #859013)
+  * Generate architecture-prefixed executables.
+    These will eventually make it possible to cross-compile
+    GIR XML and typelibs for (for example) riscv64-linux-gnu
+    libraries on an x86_64-linux-gnu build system, by invoking
+    riscv64-linux-gnu-g-ir-scanner and so on. (Helps: #801672, #905715)
+  * Edit pkg-config metadata to point to architecture-prefixed tools
+  * Install a Meson cross-file to force use of the prefixed tools
+    If necessary, Meson can be invoked as
+    "meson --cross-file ${DEB_HOST_GNU_TYPE}-gobject-introspection.ini"
+    to use this.
+  * d/control, d/rules: Use a prebuilt g-i when cross-building.
+    We can generate a special variant of debian/cross-g-ir-tool.in that wraps
+    the upstream g-ir-scanner, etc. binaries with an appropriate search path
+    and executable wrapper to adapt them for the host architecture.
+  * d/control: Make build-dependencies satisfiable during cross-compilation.
+    Thanks to Helmut Grohne for hints on how this can be achieved.
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 28 Dec 2023 22:01:44 +0000
+
+gobject-introspection (1.78.1-5) unstable; urgency=medium
+
+  * dh_girepository: Generate ${gir:Depends} for GIR XML -> typelib.
+    For example, this should make it unnecessary to hard-code libfoo-dev
+    Depends: gir1.2-foo-0 (= ${binary:Version}).
+    Only do this for GIR XML in public directories, to avoid causing
+    FTBFS in packages like src:mutter that ship private GIR XML and
+    typelibs in a package not matching the usual naming convention.
+  * Upload to unstable
+    (Helps: #801672, #905715, #1016631, #1029957, #1030223)
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 12 Nov 2023 17:56:43 +0000
+
+gobject-introspection (1.78.1-4) experimental; urgency=medium
+
+  * dh_girepository, policy.txt: Don't depend on -dev packages provided by
+    gir1.2-freedesktop.
+    Until we can split up libgirepository1.0-dev into smaller binary
+    packages (#859013) or split out GIR XML from other -dev packages
+    (#1030223), either of which will require trips through the NEW queue,
+    it's undesirable for other -dev packages to hard-require it, because
+    that will make them non-multiarch-friendly (due to #801672). For now,
+    assume that all GIR XML provided by src:gobject-introspection will
+    be pulled in by the gobject-introspection toolchain rather than by
+    -dev packages' dependencies.
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 12 Nov 2023 13:23:04 +0000
+
+gobject-introspection (1.78.1-3) experimental; urgency=medium
+
+  * dh_girepository: Warn if Build-Depends: gir1.2-foo-0-dev is missing.
+    If the package builds GIR XML with <include name="Foo" version="0"/>,
+    then it should build-depend on gir1.2-foo-0-dev <!nogir>. This
+    will allow us to move GIR XML from libfoo-dev into a separate
+    gir1.2-foo-0-dev binary package when all dependent source packages
+    have added the build-dependency, making it possible to build libfoo
+    without GObject-Introspection. (Helps: #1030223)
+  * policy: Say more about build-dependencies
+  * dh_girepository: Remove tracking of typelibs in the multiarch path.
+    This used to generate a versioned Depends, but that was removed in
+    1.54.0-2 (2017).
+  * dh_girepository: Show a warning for typelibs in the pre-multiarch location.
+    Debian's gobject-introspection only searches this location as a
+    result of a Debian-specific patch which we would prefer to remove.
+    This warning corresponds to typelib-not-in-multiarch-directory
+    in Lintian.
+  * Search for GIR XML in /usr/lib/*/gir-1.0.
+    A subset of GIR XML genuinely varies between architectures,
+    and we need to install that into ${libdir} for multiarch
+    co-installability.  However, changing the girdir unconditionally
+    would make most libraries with GIR XML fail to build, and most
+    libraries' GIR XML doesn't actually vary between architectures
+    anyway: it's analogous to C/C++ header files.  Instead, set
+    gobject-introspection's internal gir_dir_prefix to ${libdir} so that
+    it searches /usr/lib/MULTIARCH/gir-1.0. It will also still search
+    /usr/share/gir-1.0, as a result of #455 upstream.
+    Write girdir=${datadir}/gir-1.0 into its .pc file, so that
+    third-party libraries will still default to installing GIR XML into
+    /usr/share/gir-1.0. This will continue to be appropriate for the
+    majority of GIR XML, for example in libflatpak-dev.
+    Several consumers of GIR XML do not yet search /usr/lib/*/gir-1.0,
+    so for now we continue to install GLib-2.0.gir into /usr/share,
+    even though it has architecture-dependent contents. Separating out
+    the GIR XML into its own binary package will be a good opportunity
+    to change that to the more correct location, but that will require
+    a trip through NEW, so let's get the groundwork into place first.
+    (Helps: #801672, #905715, #1016631, #1029957, #1030223)
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 11 Nov 2023 16:13:58 +0000
+
+gobject-introspection (1.78.1-2) experimental; urgency=medium
+
+  * d/.gitignore: Add
+  * d/rules, d/clean: Clean up man page declaratively
+  * d/rules: Use one run of dh_girepository for all packages.
+    In fact it was acting on all packages each time anyway, because the -p
+    option was interpreted as dh_girepository's -p./gir1.2-glib-2.0 (load from
+    private directory) and not as debhelper's --package (see #703941).
+  * d/rules: Run dh_girepository in verbose mode for this package
+  * dh_girepository.1: Mention the unusual meaning of -p for this tool
+    (mitigates: #703941)
+  * d/rules: Don't delete test data from glib during clean
+  * d/copyright: Update
+  * Use the same build directory for all architectures.
+    This makes GIRepository-2.0.gir architecture-independent, so it no
+    longer needs a solution to #1029957 and related bugs.
+    (GLib-2.0.gir still has architecture-dependent contents, though.)
+  * dh_girepository:
+    - Generate gir:Provides substvar for typelibs in public locations
+    - Generate gir:Provides substvar for GIR XML in public locations
+      (Helps: #1030223)
+    - Generate gir:Depends substvar for GIR XML, following <include>
+    - Try to depend on GIR packages by their canonical names, if they
+      exist as Provides
+    - Pick up versioned B-D (if any) from GIR packages' canonical names
+    - Use the host architecture gcc for compilation
+  * policy:
+    - Suggest using Provides: ${gir:Provides} for typelibs
+    - Describe gir1.2-foo-2.0-dev naming, and suggest ${gir:Provides}
+    - Packages must not have Provides for files they don't contain.
+      GObject-Introspection relies on running an executable of the host
+      architecture, so when cross-compiling, we will likely need to disable
+      it via a build-profile. If this results in GIR XML and typelibs not
+      being produced, then it would be misleading to have these Provides in
+      the package(s) that would ordinarily have contained them.
+    - Packages with GIR XML should depend on GIR XML they <include>.
+      Dependencies on the core modules provided by gir1.2-glib-2.0 are
+      excluded from this: we assume that libgirepository1.0-dev will pull
+      those in, and it would be undesirable to depend on
+      gir1.2-glib-2.0-dev while it still can't be multiarch (see #1029957).
+    - Fix an inconsistency.
+      Section 3 said that the packages with GIR XML must depend on the
+      corresponding typelibs, but section 4 said this was unnecessary.
+      Keep the stricter requirement.
+  * Add myself to Uploaders
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 04 Nov 2023 17:23:21 +0000
+
+gobject-introspection (1.78.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * Drop undefined-behaviour patch: applied in new release
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Mon, 18 Sep 2023 09:35:06 -0400
+
+gobject-introspection (1.78.0-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Simon McVittie ]
+  * New upstream release
+  * d/watch: Update the corresponding GLib version.
+    gir/*.c were actually generated from a commit slightly before 2.77.3,
+    but I've verified that the result of regenerating them from the 2.78.0
+    stable release is identical, so either one is equally valid.
+  * Build-depend on corresponding GLib version
+  * d/p/gdump-Fix-leaked-io-streams.patch:
+    Drop patch, applied upstream
+  * d/p/Revert-tests-scanner-add-some-tests-for-defines.patch:
+    Drop patch for #1032959, which no longer applies and is superseded
+    by the one below
+  * d/p/regress-Don-t-provoke-undefined-behaviour.patch:
+    Avoid exercising undefined behaviour that caused the tests to fail
+    on some compilers and architectures (#1032959)
+  * d/clean: Clean up giscanner/__pycache__/ (Closes: #1044875)
+
+  [ Amin Bandali ]
+  * Change packaging branch to debian/latest
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 08 Sep 2023 18:43:20 +0100
+
+gobject-introspection (1.76.1-5) unstable; urgency=medium
+
+  * Team upload
+
+  [ Jeremy Bicha ]
+  * Revert workaround for #1041499. Meson 1.2.1 fixed the underlying issue.
+
+  [ Simon McVittie ]
+  * d/p/gdump-Fix-leaked-io-streams.patch:
+    Add patch from upstream to fix some memory leaks.
+    The leaks indirectly caused Meson's test suite to fail, because that
+    test suite builds GObject projects with both GObject-Introspection and
+    AddressSanitizer enabled. (Closes: #1042050)
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 09 Aug 2023 11:26:45 +0100
+
+gobject-introspection (1.76.1-4) unstable; urgency=medium
+
+  * Team upload
+  * d/rules: Really pass --native-file to meson (Mitigates: #1041499)
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 22 Jul 2023 00:43:02 +0100
+
+gobject-introspection (1.76.1-3) unstable; urgency=medium
+
+  * Team upload
+
+  [ Simon McVittie ]
+  * d/rules, d/meson/no-exe-wrapper.ini: Work around a meson bug which
+    caused FTBFS on mips64el. (Mitigates: #1041499)
+
+  [ Thomas Uhle ]
+  * dh_girepository: Discover more symbols in GIR files, fixing incomplete
+    ${gir:Depends} in packages like gir1.2-harfbuzz-0.0 and
+    gir1.2-freedesktop (Closes: #1039714)
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 21 Jul 2023 14:25:12 +0100
+
+gobject-introspection (1.76.1-2) unstable; urgency=medium
+
+  * Release to unstable
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Wed, 19 Jul 2023 07:34:16 -0400
+
+gobject-introspection (1.76.1-1) experimental; urgency=medium
+
+  * New upstream release
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Sun, 26 Mar 2023 15:41:48 -0400
+
+gobject-introspection (1.76.0-2) experimental; urgency=medium
+
+  [ Simon McVittie ]
+  * d/watch: Use the specific version of GLib matching gir/g*.c
+
+  [ Jeremy Bicha ]
+  * debian/watch: Bump glib version to 2.76.0
+  * Add patch to revert new tests that do not work on all architectures
+    (Closes: #1032959)
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Wed, 15 Mar 2023 16:09:35 -0400
+
+gobject-introspection (1.76.0-1) experimental; urgency=medium
+
+  * New upstream release
+  * debian/control.in: Bump minimum glib to 2.76.0
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Tue, 14 Mar 2023 08:37:36 -0400
+
+gobject-introspection (1.75.6-1) experimental; urgency=medium
+
+  * New upstream release
+  * debian/control.in: Build against glib 2.75
+  * debian/libgirepository-1.0-1.symbols.in: Add new symbols
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Fri, 17 Feb 2023 11:30:17 -0500
+
+gobject-introspection (1.74.0-3) unstable; urgency=medium
+
+  * Team upload
+  * d/control.in: libgirepository1.0-dev is not Multi-Arch: same.
+    libgirepository1.0-dev cannot be Multi-Arch: same, because GLib-2.0.gir
+    differs between architectures (see #905715). It also cannot usefully be
+    Multi-Arch: same because it depends on gobject-introspection, which
+    includes g-ir-scanner, which is an architecture-specific tool.
+    (Reopens: #801672; mitigates: #905715)
+  * Remove versioned constraints unnecessary since buster (oldstable)
+  * Update standards version to 4.6.2 (no changes needed)
+  * d/upstream/metadata: Add
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 19 Jan 2023 19:38:57 +0000
+
+gobject-introspection (1.74.0-2) unstable; urgency=medium
+
+  * debian/control.in: Bump minimum glib to 2.74.0
+  * debian/control.in: Drop explicit glib dependency from libgirepository-1.0-1
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Mon, 19 Sep 2022 18:08:07 -0400
+
+gobject-introspection (1.74.0-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream release
+  * d/copyright: Add copyright/licensing information for girepository/cmph.
+    Thanks to Roderich Schupp. (Closes: #1018708)
+  * Update d/watch
+    - Update GLib to 2.74.0
+    - Fix syntax of dversionmangle by escaping '+'
+    - Use non-capturing parentheses for version mangling
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 18 Sep 2022 19:27:58 +0100
+
+gobject-introspection (1.73.0+ds-1) unstable; urgency=medium
+
+  * Team upload
+  * d/watch, d/gbp.conf: Add GLib source code corresponding to the
+    doc-comments found in gir/*.c as a secondary tarball (Closes: #1017890)
+  * d/copyright: Add copyright information for GLib
+  * d/copyright: Update copyright information for GObject-Introspection
+  * d/README.source: Document how to find the corresponding GLib version
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 27 Aug 2022 16:48:23 +0100
+
+gobject-introspection (1.73.0-2) unstable; urgency=medium
+
+  * Release to unstable
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Mon, 22 Aug 2022 21:47:21 -0400
+
+gobject-introspection (1.73.0-1) experimental; urgency=medium
+
+  * Team upload
+  * d/watch: Look for development versions
+  * New upstream release
+  * d/control.in: Depend on GLib 2.73.x
+  * d/control.in: Build-depend on Meson 0.60.0
+  * Standards-Version: 4.6.1 (no changes required)
+  * Update patch to apply to new version
+  * Remove unused Lintian override now that #970275 was fixed
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 17 Aug 2022 10:57:01 +0100
+
+gobject-introspection (1.72.0-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream release
+  * d/libgirepository-1.0-1.symbols.in: Add new symbols
+  * Upload to unstable
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 18 Mar 2022 12:27:20 +0000
+
+gobject-introspection (1.71.0-1) experimental; urgency=medium
+
+  * New upstream release
+  * debian/control.in: Bump minimum meson to 0.58.2
+  * Drop 2 patches applied in new release
+  * debian/libgirepository-1.0-1.symbols.in: Add new symbols
+
+ -- Jeremy Bicha <jeremy.bicha@canonical.com>  Mon, 14 Feb 2022 11:00:35 -0500
+
+gobject-introspection (1.70.0-3) unstable; urgency=medium
+
+  * Cherry-pick 2 patches to fix build with latest meson
+
+ -- Jeremy Bicha <jbicha@debian.org>  Thu, 13 Jan 2022 21:05:47 -0500
+
+gobject-introspection (1.70.0-2) unstable; urgency=medium
+
+  * Team upload
+  * Generate a dependency on libgirepository-1.0-1-with-libffi8 where needed.
+    A few gobject-introspection symbols have libffi data structures in their
+    arguments or results, resulting in crashes if a dependent package is
+    not expecting the same ABI of libffi. Add a Provides on a virtual
+    package with a programmatically-generated name such as
+    libgirepository-1.0-1-with-libffi8, and generate dependencies on that
+    virtual package if the affected symbols are used, so that
+    gobject-introspection and its users are all on the same side of each
+    future libffi transition. (Closes: #995032)
+  * d/control.in: Add Breaks on cjs, gjs, etc. that expect the libffi7 ABI.
+    Newer versions of these libraries have been binNMU'd against the libffi8
+    ABI, and future versions of them will pick up a dependency on
+    libgirepository-1.0-1-with-libffi8, but their versions in bullseye and
+    testing are not compatible with a version of gobject-introspection that
+    was compiled against libffi8. (Also necessary for #995032)
+  * Build-depend on libffi-dev (>= 3.4).
+    This makes sure we are on the "new" side of the libffi8 transition,
+    so that the Breaks mentioned above make sense.
+  * Add a Lintian override for #970275
+  * Standards-Version: 4.6.0 (no changes required)
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 25 Sep 2021 17:33:11 +0100
+
+gobject-introspection (1.70.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/control.in: Bump minimum glib to 2.70
+  * debian/control.in: Bump minimum meson to 0.55.3
+  * debian/libgirepository-1.0-1.symbols: Add new symbols
+  * debian/rules: Clean up a bit
+
+ -- Jeremy Bicha <jbicha@debian.org>  Mon, 20 Sep 2021 19:42:00 -0400
+
+gobject-introspection (1.68.0-2) unstable; urgency=medium
+
+  * Team upload
+  * Release to unstable
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 17 Aug 2021 09:52:31 +0100
+
+gobject-introspection (1.68.0-1) experimental; urgency=medium
+
+  * New upstream release:
+    - Update GLib annotations
+  * debian/control:
+    - Add python3-dev versioned dependency to match upstream
+    - Use dh 13 so that we can get --fail-missing for free
+    - Bump Standards-Version, no change required
+  * debian/patches: Do not install win32 gir files in non-windows
+  * debian: Install examples in gobject-introspection and libgirepository1.0-dev
+  * debian/rules: Remove redoundant --as-needed
+  * debian: Use debhelper 13 variable substitution in install files
+
+ -- Marco Trevisan (Treviño) <marco@ubuntu.com>  Thu, 17 Jun 2021 15:29:28 +0200
+
+gobject-introspection (1.66.1-1) unstable; urgency=medium
+
+  * New upstream release
+    - Update GLib annotations
+    - gimarshallingtests: Add more tests for flags
+    - Revert a documentation-processing change that caused regressions
+  * d/p/debian/multiarch_compat.patch: Move from d/p/ to debian/
+    subdirectory.
+    This is a Debian-specific patch that is not intended to go upstream.
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 12 Oct 2020 10:30:19 +0100
+
+gobject-introspection (1.66.0-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream release
+    - Support the gtk-doc GTK 4 action syntax
+    - GITypeInfo storage type utility API
+    - Fix XDG_DATA_DIRS logic
+    - libgirepository: Add missing nullable annotations
+    - dumper: Fix missing symbols in LTO case or with overridden symbol
+      visibility settings
+    - Documentation improvements
+    - giscanner: parse block comments for members and fields
+    - Add the notion of standalone doc sections
+    - giscanner: Fix section matching for documentation
+  * Update symbols file
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 22 Sep 2020 09:39:58 +0100
+
+gobject-introspection (1.64.1-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream release
+    - d/p/gimarshallingtests-Use-g_assert_cmpfloat_with_epsilon.patch:
+      Drop patch, applied upstream
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 12 Apr 2020 12:02:48 +0100
+
+gobject-introspection (1.64.0-2) unstable; urgency=medium
+
+  * debian/dh_girepository: Make the parsing of BD more robust.
+    Thanks to Simon McVittie (Closes: #933729)
+
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 28 Mar 2020 20:17:49 +0100
+
+gobject-introspection (1.64.0-1) experimental; urgency=medium
+
+  [ Simon McVittie ]
+  * Add Breaks on older cjs, to avoid broken partial upgrades when
+    transitioning to libffi7 (see version 1.62.0-5 for more details)
+
+  [ Iain Lane ]
+  * New upstream release
+    + Update glib annotations
+    + Fix regress scanner tests for non-gcc/clang compilers
+  * gimarshallingtests-Use-g_assert_cmpfloat_with_epsilon.patch: Add. Don't
+    perform exact float comparisons; this doesn't work everywhere -
+    particularly on i386. This should fix the tests for gjs 1.62.
+
+ -- Iain Lane <iain.lane@canonical.com>  Thu, 12 Mar 2020 18:17:19 +0000
+
+gobject-introspection (1.63.2-1) experimental; urgency=medium
+
+  * New upstream release
+    - Add GMemoryMonitor to glib annotations
+    - autotools: Make INTROSPECTION_GIRDIR/INTROSPECTION_TYPELIBDIR respect
+      prefix/datadir/libdir
+    - build: require meson 0.50.1
+    - build: use proper dylib versioning on macOS
+    - Cross compile support
+    - Drop deprecated xml.etree.ElementTree.Element.getchildren() calls
+    - Fix a memory leak in g_irepository_get_object_gtype_interfaces()
+    - Fix build reproducibility
+    - Fix non-libtool code being run with no nob-libtool dependencies
+    - girepository: Also store GType cache misses
+    - meson: change "cairo" from a boolean to a feature option
+    - meson: change "doctool" from a boolean to a feature option
+    - scanner: Support array arguments with static keyword
+    - tests: Actually test libregress by specifying the LD_LIBRARY_PATH
+    - Update glib annotations
+  * rules: Update doctool/cairo build flags for bool → feature switch
+  * control: Bump BD on meson to 0.50.1 per upstream
+
+ -- Iain Lane <laney@debian.org>  Mon, 17 Feb 2020 18:19:18 +0000
+
+gobject-introspection (1.62.0-5) unstable; urgency=medium
+
+  * Team upload
+
+  [ Simon McVittie ]
+  * Add more Breaks, to avoid broken partial upgrades during the libffi7
+    transition by ensuring that users of our libffi-related APIs are
+    upgraded to a version that was definitely built against libffi7
+    - libgjs0g (<< 1.58.1-2~)
+    - libglib-object-introspection-perl (<< 0.048-2~)
+    - ruby-gobject-introspection (<< 3.4.1-2~)
+  * Version the (build-)dependency on GLib to make sure libgobject is
+    also not linked to libffi6
+
+  [ Iain Lane ]
+  * rules: Pass the private module directory to dh_python3.
+    We only build for the default python version. Previously dh_python3
+    wasn't finding the directory containing the private modules, so it
+    didn't know this. (Closes: #950267)
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 03 Feb 2020 19:29:41 +0000
+
+gobject-introspection (1.62.0-4) unstable; urgency=medium
+
+  * Team upload
+
+  [ Simon McVittie ]
+  * Add dependencies for libffi transition:
+    - Build-depend on libffi-dev (>= 3.3) to guarantee that our ABI
+      includes libffi7 objects
+    - Change -dev dependency to libffi-dev (>= 3.3) too
+    - d/libgirepository-1.0-1.symbols: Bump ffi-related symbols to 1.62.0-4~.
+      This forces dependent packages to pick up a suitably versioned
+      dependency on this package.
+    - Add Breaks on older python-gi and python3-gi versions that would
+      have expected libffi6 objects.
+      The same should ideally be done for cjs, gjs,
+      libglib-object-introspection-perl and ruby-gnome, but they haven't
+      had a sourceful upload since the libffi7 transition started, and I
+      would prefer not to add Breaks on specific binNMU versions.
+  * Bump Standards-Version to 4.5.0 (no changes required)
+
+  [ lintian-brush ]
+  * Set field Upstream-Name in debian/copyright.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 30 Jan 2020 00:09:56 +0000
+
+gobject-introspection (1.62.0-3) unstable; urgency=medium
+
+  * Team upload
+  * d/tests/build: Mark as superficial
+  * Explicitly build-depend on dh-python, fixing FTBFS with
+    python3-defaults (>= 3.7.5-3)
+  * Use debhelper-compat 12
+  * Use dh-sequence-gnome and dh-sequence-python3 build-dependencies to
+    enable debhelper addons
+  * d/copyright: Fix syntax.
+    Patterns with character classes, such as foo.[ch], are not supported
+    by the machine-readable copyright file spec.
+  * d/tests: Fix some shellcheck warnings
+  * d/tests/build: Make autopkgtest cross-test-friendly
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 19 Jan 2020 19:01:51 +0000
+
+gobject-introspection (1.62.0-2) unstable; urgency=medium
+
+  * Team upload.
+  * Upload to unstable.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 30 Sep 2019 13:58:19 +0200
+
+gobject-introspection (1.62.0-1) experimental; urgency=medium
+
+  [ Iain Lane ]
+  * New upstream release
+    + Add documentation to the RelaxNG schema
+    + Add Vulkan gir
+    + cachestore: handle cache getting deleted while loading it
+    + Drop autotools build system
+    + dumper: Use the distutils linker
+    + gimarshallingtests: Add a marshalling test case for GPtrArrays and
+      GArrays of structures
+    + Make g_irepository_get_object_gtype_interfaces actually work
+    + meson: Fix wrong dependency type check for gio-unix
+    + meson: require 0.49.2
+    + meson: use pkg-config directly for libffi cflags and libs
+    + regress: Add regression test for signal with GError param
+    + scanner: parse and expose function macros
+    + structinfo: Fix offset in find_method()
+    + tests: Don't include "config.h" in installed files
+    + Unused variable fixes
+    + Update glib annotations
+
+  [ Philip Chimento ]
+  * debian/control.in: Bump meson build dependency. This is a new requirement
+    documented in the upstream meson.build file.
+  * debian/patches: Refresh
+  * Install new Vulkan-1.0.typelib. This is now part of the gir1.2-freedesktop
+    package which Provides gir1.2-vulkan-1.0 as well.
+
+ -- Tim Lunn <tim@feathertop.org>  Tue, 10 Sep 2019 21:50:41 +1000
+
+gobject-introspection (1.60.1-1) experimental; urgency=medium
+
+  * New upstream release
+    + docs: include '--c-include' in g-ir-scanner man page
+    + meson: always pass --quiet to g-ir-scanner
+    + tests: Fix compatibility with Python 3.5
+    + Update glib annotations (glib-2-60)
+
+ -- Iain Lane <laney@debian.org>  Tue, 09 Apr 2019 09:51:49 +0100
+
+gobject-introspection (1.60.0-1) experimental; urgency=medium
+
+  * New upstream release
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 10 Mar 2019 13:02:02 -0400
+
+gobject-introspection (1.59.4-1) experimental; urgency=medium
+
+  * New upstream development release
+  * Build with meson
+  * debian/libgirepository-1.0-1.symbols: Add new symbols
+
+ -- Jeremy Bicha <jbicha@debian.org>  Thu, 07 Feb 2019 19:02:20 -0500
+
+gobject-introspection (1.58.3-2) unstable; urgency=medium
+
+  * Add Provides: dh-sequence-gir
+
+ -- Jeremy Bicha <jbicha@debian.org>  Thu, 10 Jan 2019 23:28:15 -0500
+
+gobject-introspection (1.58.3-1) unstable; urgency=medium
+
+  * New upstream release
+  * Drop python-markdown_3.patch: Applied in new release
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 30 Dec 2018 08:28:02 -0500
+
+gobject-introspection (1.58.2-2) unstable; urgency=medium
+
+  [ Dmitry Shachnev ]
+  * Backport upstream patch to make giscanner/docwriter.py support
+    Python-Markdown 3.0.
+
+  [ Jeremy Bicha ]
+  * Add -Wl,-O1 -Wl,--as-needed to our LDFLAGS
+  * Enable all hardening flags
+  * Bump Standards-Version to 4.3.0
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 23 Dec 2018 12:31:08 -0500
+
+gobject-introspection (1.58.2-1) unstable; urgency=medium
+
+  * New upstream release
+  * debianlibgirepository-1.0-1.symbols; Add Build-Depends-Package
+
+ -- Jeremy Bicha <jbicha@debian.org>  Fri, 14 Dec 2018 14:29:00 -0500
+
+gobject-introspection (1.58.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bump Standards-Version to 4.2.1
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 25 Nov 2018 20:55:11 -0500
+
+gobject-introspection (1.58.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bump minimum libglib2.0-dev to 2.58.0
+  * Release to unstable
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 02 Sep 2018 09:23:01 -0400
+
+gobject-introspection (1.57.3-2) experimental; urgency=medium
+
+  * Have gobject-introspection depend on python3-markdown.
+    Missing dependency was detected by autopkgtest.
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sat, 18 Aug 2018 12:19:04 -0400
+
+gobject-introspection (1.57.3-1) experimental; urgency=medium
+
+  * New upstream development release
+  * Build-Depend on python3-markdown
+
+ -- Jeremy Bicha <jbicha@debian.org>  Fri, 17 Aug 2018 20:40:09 -0400
+
+gobject-introspection (1.57.2-2) experimental; urgency=medium
+
+  * Set LC_ALL=C.UTF-8 to avoid test failure
+
+ -- Jeremy Bicha <jbicha@debian.org>  Mon, 06 Aug 2018 22:43:02 -0400
+
+gobject-introspection (1.57.2-1) experimental; urgency=medium
+
+  * New upstream development release
+  * Bump minimum libglib2.0-dev to 2.57.2
+  * Build-Depend on autoconf-archive
+  * debian/gobject-introspection.install: collections has been dropped
+    in favor of the built-in support in recent Python
+  * debian/gobject-introspection.docs: README → README.rst,
+    AUTHORS was dropped in new release
+  * Refresh patch and rename to multiarch_compat.patch
+
+ -- Jeremy Bicha <jbicha@debian.org>  Mon, 06 Aug 2018 17:42:21 -0400
+
+gobject-introspection (1.56.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bump minimum libglib2.0-dev to 2.56.1
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sun, 15 Apr 2018 10:09:24 -0400
+
+gobject-introspection (1.56.0-2) unstable; urgency=medium
+
+  * Build-Depend and Depend on python3-distutils
+
+ -- Jeremy Bicha <jbicha@debian.org>  Tue, 20 Mar 2018 08:36:52 -0400
+
+gobject-introspection (1.56.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * Release to unstable
+  * Bump minimum libglib2.0-dev to 2.56.0
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sat, 17 Mar 2018 08:51:27 -0400
+
+gobject-introspection (1.55.2-1) experimental; urgency=medium
+
+  [ Jeremy Bicha ]
+  * Update Vcs fields for migration to https://salsa.debian.org/
+
+  [ Iain Lane ]
+  * debian/{control{,.in},gbp.conf,watch}: Update for exp / 1.55.
+  * New upstream release 1.55.2
+  * debian/control{,.in}: Bump libglib2.0-dev BD to 2.55.2 per upstream.
+
+ -- Iain Lane <laney@debian.org>  Mon, 26 Feb 2018 17:15:10 +0000
+
+gobject-introspection (1.54.1-4) unstable; urgency=medium
+
+  [ Simon McVittie ]
+  * d/policy.txt: Specify replacement of underscore with hyphen/minus
+    for the package names of the rare typelibs that contain an
+    underscore (v_sim is one such)
+
+  [ Jeremy Bicha ]
+  * Update Vcs fields for conversion to git
+  * Add debian/gbp.conf
+  * Bump Standards-Version to 4.1.2
+  * Bump debhelper compat to 11
+
+ -- Jeremy Bicha <jbicha@debian.org>  Sat, 16 Dec 2017 18:56:50 -0500
+
+gobject-introspection (1.54.1-3) unstable; urgency=medium
+
+  * Team upload
+  * d/policy.txt: When multiple typelibs are bundled together, recommend
+    versioned Provides on the names they would have had if packaged
+    separately
+  * d/control: Add the recommended versioned Provides
+  * d/control: Set Rules-Requires-Root to no
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 12 Nov 2017 12:00:32 +0000
+
+gobject-introspection (1.54.1-2) unstable; urgency=medium
+
+  * Team upload
+  * dh_girepository: Create a directory in the same way as debhelper,
+    avoiding the need for root or fakeroot (Closes: #880095)
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 30 Oct 2017 09:41:29 +0000
+
+gobject-introspection (1.54.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bump Standards-Version to 4.1.1
+
+ -- Jeremy Bicha <jbicha@debian.org>  Tue, 03 Oct 2017 13:52:10 -0400
+
+gobject-introspection (1.54.0-3) unstable; urgency=medium
+
+  * debian/dh_girepository: Try to find the minimal required version for a gir
+    package by also looking at the minimal version of the package containing
+    the .gir file (Closes: #640893)
+
+ -- Laurent Bigonville <bigon@debian.org>  Mon, 25 Sep 2017 19:21:59 +0200
+
+gobject-introspection (1.54.0-2) unstable; urgency=medium
+
+  * Update dh_girepository to no longer generate a dependency on
+    libgirepository-1.0-1 (>= 1.41.4-1) via ${gir:Depends}. As jessie already
+    contains a multi-arch capable libgirepository-1.0-1 this is no longer
+    necessary.
+  * Mark libgirepository1.0-doc as Multi-Arch: foreign. (Closes: #875649)
+
+ -- Michael Biebl <biebl@debian.org>  Sun, 17 Sep 2017 22:50:25 +0200
+
+gobject-introspection (1.54.0-1) unstable; urgency=medium
+
+  [ Jeremy Bicha ]
+  * New upstream release
+  * Bump dependency on GLib (>= 2.54.0)
+  * Bump Standards-Version to 4.1.0
+
+  [ Matthias Klumpp ]
+  * Drop When-handling-errors-according-to-errno-catch-both-I.patch
+    - Applied upstream
+
+ -- Jeremy Bicha <jbicha@debian.org>  Mon, 11 Sep 2017 20:43:15 -0400
+
+gobject-introspection (1.53.2-4) unstable; urgency=medium
+
+  * Upload to unstable
+  * Bump standards version: No changes needed
+
+ -- Matthias Klumpp <mak@debian.org>  Sun, 30 Jul 2017 15:54:16 +0200
+
+gobject-introspection (1.53.2-3) experimental; urgency=medium
+
+  * Merge from unstable.
+  * debian/dh_girepository: Be a bit more forgiving when finding out the
+    version gir format in use. We're seeing files that have <repository> and
+    <include> on the same line, and our greedy regex was finding the version
+    attribute of the <include> when we want the one from <repository>.
+
+ -- Iain Lane <laney@debian.org>  Tue, 25 Jul 2017 18:23:47 +0100
+
+gobject-introspection (1.53.2-2) experimental; urgency=medium
+
+  * debian/patches/0001-When-handling-errors-according-to-errno-catch-both-I.patch:
+    Take patch by Simon McVittie from upstream bug #772173 to catch IOError
+    and OSError as appropriate between python2/3.
+
+ -- Iain Lane <laney@debian.org>  Fri, 16 Jun 2017 18:02:44 +0100
+
+gobject-introspection (1.53.2-1) experimental; urgency=medium
+
+  [ Jeremy Bicha ]
+  * New upstream release
+  * Bump required libglib2.0-dev to 2.52.0
+
+  [ Iain Lane ]
+  * New upstream release 1.53.2.
+  * debian/watch: Find unstable versions.
+  * debian/control: glib ≥ 2.53.2
+
+ -- Iain Lane <laney@debian.org>  Thu, 15 Jun 2017 16:01:58 +0100
+
+gobject-introspection (1.51.5-1) experimental; urgency=medium
+
+  [ Jeremy Bicha ]
+  * New upstream release
+  * Bump required libglib2.0-dev to 2.51.2
+
+  [ Iain Lane ]
+  * New upstream release 1.51.5
+  * Bump BD on glib to ≥ 2.51.5, per configure.ac.
+
+ -- Iain Lane <laney@debian.org>  Wed, 15 Mar 2017 16:45:10 +0000
+
+gobject-introspection (1.50.0-1) unstable; urgency=medium
+
+  [ Andreas Henriksson ]
+  * Bump Standards-Version to 3.9.8
+
+  [ Michael Biebl ]
+  * New upstream release.
+  * Bump libglib2.0-dev to (>= 2.50.0) as per configure.ac changes.
+  * Convert from cdbs to dh.
+  * Bump debhelper compat level to 10.
+  * Mark libgirepository1.0-dev as Multi-Arch: same. (Closes: #801672)
+  * Update policy.txt for Multi-Arch. (Closes: #766368)
+
+ -- Michael Biebl <biebl@debian.org>  Wed, 21 Sep 2016 20:10:58 +0200
+
+gobject-introspection (1.49.2-1) unstable; urgency=medium
+
+  * New upstream development release.
+  * Update (build-)dependencies according to configure.ac changes:
+    - bump libglib2.0-dev to >= 2.49.7
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 13 Sep 2016 14:38:13 +0200
+
+gobject-introspection (1.49.1-2) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 30 Aug 2016 19:47:32 +0200
+
+gobject-introspection (1.49.1-1) experimental; urgency=medium
+
+  * New upstream development release.
+  * Update (build-)dependencies according to configure.ac changes:
+    - bump glib2.0 to >= 2.49.4
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri, 12 Aug 2016 16:04:58 +0200
+
+gobject-introspection (1.48.0-3) unstable; urgency=medium
+
+  * Switch to python3.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 13 Jul 2016 17:48:10 +0200
+
+gobject-introspection (1.48.0-2) unstable; urgency=medium
+
+  * Upload to unstable.
+
+ -- Michael Biebl <biebl@debian.org>  Tue, 19 Apr 2016 23:26:49 +0200
+
+gobject-introspection (1.48.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Update build-dependencies according to configure.ac changes:
+    - bump glib to >= 2.48.0
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 31 Mar 2016 12:58:09 +0200
+
+gobject-introspection (1.47.92-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Bump libglib2.0-dev to (>= 2.47.6) according to configure.ac changes.
+  * Drop debian/patches/git_drop-timet-test.patch, now included.
+  * Bump Standards-Version to 3.9.7
+  * Fix License tags in debian/copyright to please lintian.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 14 Mar 2016 20:40:12 +0100
+
+gobject-introspection (1.46.0-4) unstable; urgency=medium
+
+  * Add debian/patches/git_drop-timet-test.patch
+    - from upstream git, fixes build on x32 (Closes: #699024)
+    Thanks to Adam Borowski for authoring patch and sending it upstream.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sun, 14 Feb 2016 18:17:18 +0100
+
+gobject-introspection (1.46.0-3) unstable; urgency=medium
+
+  * debian/tests/smoke: File 5.22 reports XML documents with the version
+    number - expect this, to fix autopkgtest failure.
+
+ -- Iain Lane <laney@debian.org>  Tue, 01 Dec 2015 12:44:31 +0000
+
+gobject-introspection (1.46.0-2) unstable; urgency=medium
+
+  [ Laurent Bigonville ]
+  * Silent -Wimplicit-function-declaration warnings (Closes: #801905)
+
+  [ Michael Biebl ]
+  * Remove Breaks, Conflicts and Replaces for versions older than oldstable.
+  * Fix cleanup rule for list-missing to properly remove the unwanted libtool
+    .la and Python cache files. Those are installed into multiarch paths now.
+
+ -- Michael Biebl <biebl@debian.org>  Tue, 03 Nov 2015 13:59:38 +0100
+
+gobject-introspection (1.46.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Upload to unstable.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 06 Oct 2015 14:13:26 +0100
+
+gobject-introspection (1.45.4-1) experimental; urgency=medium
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/control.in:
+    + Bump glib2.0 requirement to 2.44 per configure.ac.
+
+  [ Michael Biebl ]
+  * Track stable releases in debian/watch.
+
+  [ Andreas Henriksson ]
+  * New upstream development release.
+  * Bump python-dev build-dependency to >= 2.7 since
+    configure.ac now checks for python2.7.
+  * Bump glib build-dep to >= 2.45.3 as per configure.ac
+  * Update debian/libgirepository-1.0-1.symbols with one addition.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 31 Aug 2015 12:25:25 +0200
+
+gobject-introspection (1.44.0-1) unstable; urgency=medium
+
+  [ Simon McVittie ]
+  * Use "export VERBOSE=1" to get test failures' logs: VERBOSE=1 is
+    insufficient
+
+  [ Iain Lane ]
+  * New upstream release 1.44.0.
+  * Dont_unconditionally_include_config.h_in_regress.c.patch
+    Dont_unconditionally_include_config.h_in_gimarshallingtests.c.patch: Drop,
+    applied upstream.
+  * git_tests_implementation_interface.patch: Delete, it's not applied
+    any more.
+  * libgirepository-1.0-1.symbols: New symbol.
+
+ -- Iain Lane <iain@orangesquash.org.uk>  Wed, 27 May 2015 18:00:01 +0100
+
+gobject-introspection (1.42.0-2.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Dont_unconditionally_include_config.h_in_gimarshallingtests.c.patch:
+    new patch, similar to the one applied in the last upload, that fixed
+    the same problem in regress.c only (Closes: #764272)
+
+ -- intrigeri <intrigeri@debian.org>  Wed, 22 Oct 2014 11:20:04 +0200
+
+gobject-introspection (1.42.0-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Dont_unconditionally_include_config.h_in_regress.c.patch: new patch,
+    cherry-picked from upstream (Closes: #764272)
+
+ -- intrigeri <intrigeri@debian.org>  Tue, 21 Oct 2014 22:09:08 +0200
+
+gobject-introspection (1.42.0-2) unstable; urgency=medium
+
+  * dh_girepository: Add a versioned dependency on libgirepository-1.0-1
+    (>= 1.41.4-1) to ${gir:Depends} if a gir package installs typelib files
+    into multiarch libdir. This ensures a multiarch capable version of
+    libgirepository-1.0-1 is installed to avoid breakage on partial upgrades.
+
+ -- Michael Biebl <biebl@debian.org>  Wed, 01 Oct 2014 23:45:08 +0200
+
+gobject-introspection (1.42.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Drop debian/patches/0001-Hide-more-symbols-that-shouldn-t-be-exported.patch
+    - now include in new upstream release.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 23 Sep 2014 19:56:04 +0200
+
+gobject-introspection (1.41.91-3) unstable; urgency=medium
+
+  * Drop debian/patches/0002-Export-missing-g_typelib_error_quark.patch
+    - doesn't look like it'll be applied upstream and who cares about
+      this symbol anyway?
+  * Drop g_typelib_error_quark from debian/libgirepository-1.0-1.symbols
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri, 19 Sep 2014 20:49:56 +0200
+
+gobject-introspection (1.41.91-2) experimental; urgency=medium
+
+  * dh_girepository: In require_typelib(), always return if we've found the
+    target typelib in the system directory, since we'll have definitely added
+    the dependency. Thanks again to mvo.
+
+ -- Iain Lane <laney@debian.org>  Mon, 15 Sep 2014 10:56:25 +0100
+
+gobject-introspection (1.41.91-1) experimental; urgency=medium
+
+  * New upstream development release.
+  * Add debian/patches/0001-Hide-more-symbols-that-shouldn-t-be-exported.patch
+    and debian/patches/0002-Export-missing-g_typelib_error_quark.patch
+    - fix what seems to be mistakenly exported and a missing symbol from
+      conversion to "Export Symbols Using Compiler Directives"
+      see https://bugzilla.gnome.org/show_bug.cgi?id=732669
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri, 05 Sep 2014 12:37:03 -0700
+
+gobject-introspection (1.41.4-1) experimental; urgency=medium
+
+  [ Martin Pitt ]
+  * dh_girepository(1): Point out that --with gir is needed for dh.
+    (Closes: #692254)
+
+  [ Jackson Doak ]
+  * New upstream release
+    - Add Test API required by gjs 1.40.1. (LP: #1314441)
+    - Update symbols file
+
+  [ Andreas Henriksson ]
+  * New upstream development release.
+  * Drop patch from upstream:
+    - debian/patches/git_tests_implementation_interface.patch
+
+  [ Iain Lane ]
+  * debian/{rules, dh_girepository}: Apply patch (slightly modified) from
+    Michael Vogt to use a multiarch libdir. As typelib files are placed into a
+    subdirectory of libdir, this may cause some packages (those which respect
+    the `typelibdir' variable in the pcfile) to fail to build until their
+    .install files are updated. This change allows gir packages to be made
+    multiarch. (Closes: #755874)
+    + debian/patches/pre_multiarch_compat: Search for typelib files in the
+      pre-multiarch path too.
+    + debian/control*: Mark gi packages as M-A: same
+
+ -- Iain Lane <laney@debian.org>  Sun, 31 Aug 2014 00:00:03 +0100
+
+gobject-introspection (1.40.0-2) unstable; urgency=medium
+
+  * Drop breaks on libgjs0c like was done for 1.38.0-2/sid.
+  * Upload to unstable.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 02 Apr 2014 16:23:32 +0200
+
+gobject-introspection (1.40.0-1) experimental; urgency=medium
+
+  * Bump glib build-dep to >= 2.39.0
+    - otherwise gir1.2-glib-2.0 doesn't get g_desktop_app_info_search
+      which is needed by gnome-shell.
+  * debian/copyright: fix syntax errors caught by lintian
+  * New upstream release.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 25 Mar 2014 21:56:59 +0100
+
+gobject-introspection (1.39.90-3) experimental; urgency=medium
+
+  * Add missing build-essential dependency (for libc-dev, linux-libc-dev,
+    gcc); spotted by autopkgtest.
+  * Update Vcs-* links.
+  * debian/tests/control: Separate the two autopkgtests for more fine-grained
+    dependencies, and add missing "file" dependency for "tools". Allow stderr
+    output in the latter as we sometimes have warnings. Also add some missing
+    dependencies.
+  * Build with dh-autoreconf to always get latest config.* for new ports.
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 25 Feb 2014 10:52:33 +0100
+
+gobject-introspection (1.39.90-2) experimental; urgency=medium
+
+  * Move gtk-doc back to build-depends (from indep)
+    - configure checks for gtk-doc, so it is needed on binary-arch builds.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 20 Feb 2014 19:37:02 +0100
+
+gobject-introspection (1.39.90-1) experimental; urgency=medium
+
+  * New upstream beta release.
+  * Move libglib2.0-doc and gtk-doc to Build-Depends-Indep (Closes: #706914)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Wed, 19 Feb 2014 20:34:14 +0100
+
+gobject-introspection (1.39.3-1) experimental; urgency=medium
+
+  * New upstream development release.
+  * debian/control.in:
+    + Update build dependencies.
+    + Standards-Version is 3.9.5, no changes needed.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Mon, 17 Feb 2014 18:38:20 +0100
+
+gobject-introspection (1.38.0-1) experimental; urgency=low
+
+  [ Sjoerd Simons ]
+  * Sync back to Debian  From Ubuntu
+  * New upstream release
+
+  [ Jeremy Bicha ]
+  * Update homepage
+
+  [ Sjoerd Simons ]
+  * Add Breaks: libgjs0c
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Fri, 01 Nov 2013 21:41:56 +0100
+
+gobject-introspection (1.38.0-0ubuntu1) saucy; urgency=low
+
+  * New upstream release for GNOME 3.10 final.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 26 Sep 2013 07:50:34 +0200
+
+gobject-introspection (1.37.6-0ubuntu1) saucy; urgency=low
+
+  * New upstream release.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 21 Aug 2013 08:03:50 +0200
+
+gobject-introspection (1.37.4-0ubuntu3) saucy; urgency=low
+
+  * debian/gobject-introspection.install:
+    - Properly install collections/*.py
+
+ -- Rico Tzschichholz <ricotz@ubuntu.com>  Wed, 17 Jul 2013 11:23:28 +0200
+
+gobject-introspection (1.37.4-0ubuntu2) saucy; urgency=low
+
+  * debian/gobject-introspection.install: Install giscanner/collections (work
+    around upstream install bug).
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 12 Jul 2013 07:43:10 +0200
+
+gobject-introspection (1.37.4-0ubuntu1) saucy; urgency=low
+
+  * New upstream release.
+  * Bump X-Python-Version to >= 2.6.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 12 Jul 2013 06:39:39 +0200
+
+gobject-introspection (1.36.0-2) unstable; urgency=low
+
+  * Merge experimental branch.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 08 May 2013 07:11:34 +0200
+
+gobject-introspection (1.36.0-1) experimental; urgency=low
+
+  * New upstream release.
+  * Bump glib build dependency according to configure.ac.
+  * Bump Standards-Version to 3.9.4. No changes necessary.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 27 Mar 2013 07:33:04 +0100
+
+gobject-introspection (1.35.9-1) experimental; urgency=low
+
+  * New upstream release
+  * debian/libgirepository-1.0-1.symbols: Updated
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Sun, 24 Mar 2013 11:29:36 +0100
+
+gobject-introspection (1.35.8+git20130220-1) experimental; urgency=low
+
+  [ Martin Pitt ]
+  * debian/tests/build:
+    - Add -Wall -Werror for being more thorough, and fix resulting errors.
+    - Don't call deprecated g_type_init() when building with glib >= 2.35.
+
+  [ Emilio Pozuelo Monfort ]
+  * New upstream release.
+    + debian/patches/00git_glib_2.34.2_annotations.patch:
+      - Removed, included upstream.
+    + debian/control.in:
+      - Update build dependencies.
+
+  [ Sjoerd Simons ]
+  * Sync with Ubuntu
+    + Use the same git snapshot as Ubuntu (1.35.8+git20130220). The official
+      tarballs are missing some bits required for testing
+    + debian/gobject-introspection.install: Updated
+    + debian/libgirepository-1.0-1.symbols: Updated
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Mon, 18 Mar 2013 19:22:31 +0100
+
+gobject-introspection (1.34.2-1) experimental; urgency=low
+
+  * New upstream bug fix release.
+  * Add 00git_glib_2.34.2_annotations.patch: Update glib annotations to
+    2.34.2. Also committed to upstream gnome-3-6 branch.
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 13 Nov 2012 06:10:33 +0100
+
+gobject-introspection (1.34.1.1-1) experimental; urgency=low
+
+  * New upstream release.
+  * debian/control.in: Bump glib requirement to >= 2.34.1 according to
+    upstream configure.ac.
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 22 Oct 2012 11:57:31 +0200
+
+gobject-introspection (1.34.0-1) experimental; urgency=low
+
+  * New upstream release:
+    - Update annotations from glib 2.34.0.
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 05 Oct 2012 10:43:26 +0200
+
+gobject-introspection (1.33.14-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 24 Sep 2012 09:25:42 +0200
+
+gobject-introspection (1.33.10-1) experimental; urgency=low
+
+  * New upstream release.
+  * debian/libgirepository-1.0-1.symbols: Add new symbols.
+  * debian/rules: Remove .pyc and .pyo files to clean up list-missing output.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 05 Sep 2012 08:34:17 +0200
+
+gobject-introspection (1.33.9-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 20 Aug 2012 22:16:23 +0200
+
+gobject-introspection (1.33.4-1) experimental; urgency=low
+
+  * New upstream release.
+  * Add debian/tests/build: autopkgtest check: Build and run a program against
+    libgirepository1.0-dev, to verify that the headers and pkg-config file are
+    installed correctly, and that gir1.2-gtk-3.0 depends on the GIR
+    dependencies.
+  * Add debian/tests/control: DEP-8 autopkgtest control file. Add XS-Testsuite
+    header to debian/control.in.
+  * Add debian/tests/tools: DEP-8 autopkgtest to check that
+    g-ir-{scanner,compiler,generate,doc-tool} work.
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 22 Jul 2012 10:50:26 +0200
+
+gobject-introspection (1.33.3-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 26 Jun 2012 18:27:41 +0200
+
+gobject-introspection (1.33.2-1) experimental; urgency=low
+
+  * New upstream release.
+  * debian/control.in: Bump Standards-Version to 3.9.3 (no changes necessary).
+  * debian/control.in: Bump libglib2.0-dev build dependency to >= 2.33.1, as
+    this version's Gio girs contain API from that version.
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 11 Jun 2012 16:18:01 +0200
+
+gobject-introspection (1.32.1-1) unstable; urgency=low
+
+  [ Michael Biebl ]
+  * Update policy now that we have a new section introspection.
+
+  [ Martin Pitt ]
+  * Drop glib_2.30_api.patch, testing has glib 2.32 now.
+  * debian/copyright: Reformat for copyright 1.0 standard.
+  * New upstream bug fix release.
+  * debian/libgirepository-1.0-1.symbols: Add new symbol.
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 19 Apr 2012 15:11:28 +0200
+
+gobject-introspection (1.32.0-1) unstable; urgency=low
+
+  * New upstream release: Just the version bump for GNOME 3.4 final.
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 29 Mar 2012 11:30:41 +0200
+
+gobject-introspection (1.31.22-1) unstable; urgency=low
+
+  * New upstream bug fix release.
+  * debian/libgirepository-1.0-1.symbols: Add new symbol from this release.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 21 Mar 2012 16:25:22 +0100
+
+gobject-introspection (1.31.20-1) unstable; urgency=low
+
+  * New upstream release:
+    - Many g-ir-doctool improvements.
+    - Lots of new Regress tests.
+    - Some bug fixes.
+  * Drop fix-alignment.patch, applied upstream.
+  * Drop duplicate and bogus debian/libgirepository1.0-1.{install,symbols}.
+  * debian/libgirepository-1.0-1.symbols: Add two new symbols from this
+    release.
+  * debian/control: Bump Standards-Version to 3.9.3 (no changes necessary).
+  * Add glib_2.30_api.patch: Fix build with glib 2.30 by reverting to
+    deprecated g_value_[gs]et_char API.
+  * debian/rules: Explicitly configure for building g-ir-doc-tool.
+  * debian/control.in: Add new python-mako build/binary dependency for
+    g-ir-doc-tool.
+  * debian/gobject-introspection.install: Ship the g-ir-doc-tool templates, so
+    that this program can actually work.
+
+ -- Martin Pitt <mpitt@debian.org>  Mon, 05 Mar 2012 19:56:23 +0100
+
+gobject-introspection (1.31.10-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 08 Feb 2012 07:29:13 +0100
+
+gobject-introspection (1.31.1-1) unstable; urgency=low
+
+  [ Sjoerd Simons ]
+  * debian/control.in: Make the Vcs-* tags refer to the unstable repos
+
+  [ Josselin Mouette ]
+  * Make the -dev package depend on g-i. Closes: #649859.
+
+  [ Loïc Minier ]
+  * dh_girepository: don't override LD_LIBRARY_PATH completely; fakeroot needs
+    it.
+
+  [ Thorsten Glaser ]
+  * Fix invalid alignment assumptions. (Closes: #604603)
+
+  [ Michael Biebl ]
+  * Change section of gir1.2-glib-2.0 and gir1.2-freedesktop to introspection.
+  * Set pkg-gnome-maintainers@lists.alioth.debian.org as Maintainer.
+  * New upstream release.
+    - scanner: Put the -l library names after the .o, to fix FTBFS with cmake
+      projects. (LP: #897816)
+  * Refresh debian/patches/fix-alignment.patch.
+  * Strip debian/tmp/ from .install files.
+  * Add Build-Depends on libglib2.0-doc for proper cross references.
+  * Add Recommends on libglib2.0-doc to libgirepository1.0-doc.
+
+ -- Michael Biebl <biebl@debian.org>  Thu, 15 Dec 2011 07:51:35 +0100
+
+gobject-introspection (1.31.0-2) unstable; urgency=low
+
+  [ Sjoerd Simons ]
+  * Upload to Unstable
+
+  [ Josselin Mouette ]
+  * Add debhelper sequence, thanks أحمد المحمودي. Closes: #648456.
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Sun, 20 Nov 2011 12:00:47 +0000
+
+gobject-introspection (1.31.0-1) experimental; urgency=low
+
+  * New upstream bug fix release.
+  * Drop 00git-account_for_padding_in_struct_size_check.patch,
+    02_fix_unresolved_info_freeing.patch: Upstream now.
+  * debian/libgirepository-1.0-1.symbols: Add new symbol from this release.
+  * debian/watch: Switch to tar.xz, soon GNOME will release this format only.
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 27 Oct 2011 06:56:05 +0200
+
+gobject-introspection (1.30.0-2) experimental; urgency=low
+
+  * debian/patches/02_fix_unresolved_info_freeing.patch:
+    + Added. Use the correct size when freeing some type of GIBaseInfo to
+    prevent memory corruption and gnome-shell 3.0 crashes (from upstream git)
+  * debian/control.in:
+    + Add Breaks for gnome-shell << 3.0.2-6. g_file_get_contents is annotated
+      now to return a byte-arry which can't be used in the way gnome-shell
+      used to.
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Fri, 21 Oct 2011 11:36:32 +0200
+
+gobject-introspection (1.30.0-1) experimental; urgency=low
+
+  [ Martin Pitt ]
+  * New upstream release.
+  * debian/control.in: Bump libglib2.0-dev build dependency according to
+    configure.ac.
+  * debian/control.in: Add Breaks: python-gobject (<< 2.90) as this new
+    version is not compatible with earlier pygobject versions which did not
+    yet have the invoke-rewrite branch (otherwise Gio is completely broken).
+  * debian//libgirepository-1.0-1.symbols: Update for new version.
+  * debian/control.in: Fix Vcs-* URL.
+  * debian/control.in: Update Vcs-* for experimental branch.
+  * Add 00git-account_for_padding_in_struct_size_check.patch: Fix test suite
+    failure on armel, powerpc, and potentially other architectures. Taken from
+    upstream git head.
+
+  [ Josselin Mouette ]
+  * Small policy clarification.
+
+ -- Martin Pitt <mpitt@debian.org>  Fri, 21 Oct 2011 09:20:17 +0200
+
+gobject-introspection (0.10.8-2) unstable; urgency=low
+
+  * debian/watch: Switch to .bz2 tarballs.
+  * debian/dh_girepository: Use DEB_HOST_MULTIARCH when checking for multiarch
+    library directories. Closes: #631452
+
+ -- Michael Biebl <biebl@debian.org>  Sat, 25 Jun 2011 01:17:53 +0200
+
+gobject-introspection (0.10.8-1) unstable; urgency=low
+
+  * New upstream release.
+  * Use dh_python2 instead of pysupport
+  * debian/control:
+    - Bump cdbs and python-dev build-dependencies
+    - Drop python-support build-dependency
+    - Bump Standards-Version to 3.9.2 (no further changes)
+  * debian/rules:
+    - Call dh_python2 instead of dh_pysupport
+    - Delete .pyc files in clean rule
+
+ -- Laurent Bigonville <bigon@debian.org>  Fri, 06 May 2011 21:54:25 +0200
+
+gobject-introspection (0.10.7-1) unstable; urgency=low
+
+  * policy.txt: change the policy about dependencies between the
+    development package and the gir package.
+    Rationale: this will simplify build-dependencies a lot.
+  * Implement this in libgirepository1.0-dev.
+  * New upstream release.
+
+ -- Josselin Mouette <joss@debian.org>  Sun, 10 Apr 2011 17:39:47 +0200
+
+gobject-introspection (0.10.4-2) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Tue, 22 Mar 2011 00:32:36 +0000
+
+gobject-introspection (0.10.4-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Fri, 11 Mar 2011 20:15:31 +0000
+
+gobject-introspection (0.10.3-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Mon, 28 Feb 2011 19:47:26 +0000
+
+gobject-introspection (0.10.2-1) experimental; urgency=low
+
+  * New upstream release.
+    + debian/libgirepository-1.0-1.symbols:
+      - Updated for the new symbols.
+    + debian/rules:
+      - Fail the build if the symbols file is outdated.
+      - Make the shlibs file always depend on the latest upstream version.
+  * debian/dh_girepository:
+    + Look for libraries in private directories. Closes: #612148.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Thu, 10 Feb 2011 00:19:41 +0000
+
+gobject-introspection (0.10.1-1) experimental; urgency=low
+
+  * New upstream release.
+    - d/p/0001-Avoid-using-namespace-as-identifier-in-public-header.patch,
+      d/p/0002-Regenerate-gio-2.0.c-and-gobject-2.0.c-from-current-.patch,
+      d/p/0003-Regenerate-gio-2.0.c.patch,
+      d/p/0004-scanner-Properly-parse-recursive-list-type-nodes.patch,
+      d/p/0005-scanner-Fix-handling-of-property-transfer.patch,
+      d/p/0006-scanner-Make-sure-that-vfuncs-made-to-the-GIR.patch:
+      + Removed, included upstream.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Wed, 12 Jan 2011 23:30:21 +0000
+
+gobject-introspection (0.10.0-2) experimental; urgency=low
+
+  * debian/dh_girepository:
+    - Look for the format version everywhere in all the <repository line,
+      not just after "<repository", as some packages (e.g. telepathy-glib)
+      have it at the end.
+  * debian/patches/0001-Avoid-using-namespace-as-identifier-in-public-header.patch
+    debian/patches/0002-Regenerate-gio-2.0.c-and-gobject-2.0.c-from-current-.patch
+    debian/patches/0003-Regenerate-gio-2.0.c.patch
+    debian/patches/0004-scanner-Properly-parse-recursive-list-type-nodes.patch
+    debian/patches/0005-scanner-Fix-handling-of-property-transfer.patch
+    debian/patches/0006-scanner-Make-sure-that-vfuncs-made-to-the-GIR.patch
+    - Backport patches from upstream git to build with latest glib2.0.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Fri, 07 Jan 2011 17:32:00 +0000
+
+gobject-introspection (0.10.0-1) experimental; urgency=low
+
+  * New upstream release.
+    - debian/libgirepository-1.0-1.symbols:
+      + Updated.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Thu, 23 Dec 2010 02:02:10 +0000
+
+gobject-introspection (0.9.12-5) experimental; urgency=low
+
+  * debian/dh_girepository:
+    - Use the extra dirs to look for the corresponding girs.
+    - Also use them to look for the dependencies in the same package.
+    - Rename the -i option to -p as it conflicts with the -i/--indep
+      debhelper option and it's not used by any package yet.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Tue, 14 Dec 2010 00:49:23 +0100
+
+gobject-introspection (0.9.12-4) experimental; urgency=low
+
+  * debian/policy:
+    - Require that gir packages are named properly according to the gir
+      format (e.g. gir1.2* for gir 1.2 format).
+    - Require that a gir package's dependencies have the same format
+      as the package itself.
+    - Update examples to use the 1.2 format.
+  * debian/dh_girepository:
+    - Implement the above changes, aborting if the package name is not
+      correct or if the dependencies don't have the same format.
+    - Add a -i option to look for dependencies in the specified
+      directories.
+    - Every extra parameter without an option is now an extra directory
+      where to look for the typelibs in the package, in addition to
+      usr/lib/girepository-1.0/.
+  * debian/control.in,
+    debian/gir1.*:
+    - Rename the gir packages to gir1.2* to follow the new policy.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sat, 11 Dec 2010 19:02:50 +0100
+
+gobject-introspection (0.9.12-3) experimental; urgency=low
+
+  * debian/control.in: Add missing replaces on gir-repository-dev.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sat, 20 Nov 2010 18:48:17 +0100
+
+gobject-introspection (0.9.12-2) experimental; urgency=low
+
+  * debian/control.in: Add Provides/Conflicts/Replaces on Ubuntu package name
+
+ -- Laurent Bigonville <bigon@debian.org>  Wed, 03 Nov 2010 19:07:46 +0100
+
+gobject-introspection (0.9.12-1) experimental; urgency=low
+
+  * New upstream release
+    - Drop debian/patches/01_fix_doc_building.diff: not needed anymore
+    - Drop debian/patches/02_local_gir.patch: Fixed upstream
+  * Really drop debian/patches/02_giscanner_cache.patch
+  * Drop gir1.0-everything-1.0.{install,symbols}, not needed anymore
+  * debian/rules: Remove useless environment variables
+  * debian/watch: Bump watch file version to 3
+
+ -- Laurent Bigonville <bigon@debian.org>  Sat, 23 Oct 2010 23:51:25 +0200
+
+gobject-introspection (0.9.6-1) experimental; urgency=low
+
+  [ Simon McVittie ]
+  * New upstream release
+    - add skeletal DBus-1.0 and DBusGLib-1.0 introspection to
+      gir1.0-freedesktop
+    - remove debian/patches/02_giscanner_cache.patch - applied upstream
+    - remove gir1.0-everything, whose files are no longer installed by
+      upstream
+    - install the source code for gir1.0-everything, which pygi now uses
+      instead
+  * debian/patches/02_local_gir.patch: new patch to use local .gir files
+    during the build, in case the system ones came from an older g-i
+  * debian/rules: set up the environment to use local .gir, .typelib files
+  * While we're in the NEW queue for a SONAME bump anyway, name the shared
+    library package according to Policy (libgirepository-1.0-1 instead of
+    libgirepository1.0-1)
+  * Add the cdbs list-missing rule
+
+  [ Sjoerd Simons ]
+  * Upload for smcv
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Wed, 22 Sep 2010 23:39:04 +0200
+
+gobject-introspection (0.9.3-1) experimental; urgency=low
+
+  [ Sjoerd Simons ]
+  * New upstream release
+
+  [ Laurent Bigonville ]
+  * debian/control.in:
+    - Bump Standards-Version to 3.9.1 (no further changes)
+    - Add proper Breaks for libgirepository1.0-doc package
+  * debian/libgirepository1.0-1.symbols:
+    - Fix symbols file and add new symbols
+  * Add debian/patches/02_giscanner_cache.patch:
+    - Do not crash if cache dir not present (Taken from Ubuntu)
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Sun, 05 Sep 2010 11:32:12 +0100
+
+gobject-introspection (0.6.15~git20100713-1) experimental; urgency=low
+
+  [ Laurent Bigonville ]
+  * Install Everything-1.0 and GIMarshallingTests-1.0 typelib in new
+    gir1.0-everything-1.0 package (Closes: #550478)
+  * Split documentation in its own -doc package (Closes: #584876)
+  * debian/rules: Remove shlibs versioning logic now we're using .symbols file
+
+  [ Gustavo Noronha Silva ]
+  * Development snapshot
+  * debian/libgirepository1.0-0.symbols:
+  - update with new and remove(!) symbols
+  * debian/patches/01_fix_doc_building.diff:
+  - dodge documentation build problem by removing files that do not
+    exist from the file lists
+  * debian/rules:
+  - no longer need simple-patchsys with 3.0 (quilt) source format
+  * debian/control:
+  - build-depend on glib >= 2.25.11 to make sure we can bind the new
+    interfaces such as GSettings
+
+ -- Gustavo Noronha Silva <kov@debian.org>  Tue, 13 Jul 2010 16:31:27 -0300
+
+gobject-introspection (0.6.14-1) unstable; urgency=low
+
+  * New upstream release
+  * debian/control: Add Vcs-Svn and Vcs-Browser field
+  * debian/libgirepository1.0-0.symbols: Add symbols file
+  * Switch to dpkg-source 3.0 (quilt) format
+
+ -- Laurent Bigonville <bigon@debian.org>  Mon, 07 Jun 2010 09:46:24 +0200
+
+gobject-introspection (0.6.12-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 25 May 2010 11:40:59 +0200
+
+gobject-introspection (0.6.11-1) unstable; urgency=low
+
+  * New upstream release:
+    + debian/gir1.0-freedesktop.install:
+      - Add xrandr-1.3 introspection files.
+    + debian/libgirepository1.0-dev.install:
+      - Add API documentation.
+
+ -- Sebastian Dröge <slomo@debian.org>  Sat, 22 May 2010 12:35:59 +0200
+
+gobject-introspection (0.6.10-1) unstable; urgency=low
+
+  * New upstream release:
+    + debian/control.in:
+      - Add build dependency on libcairo2-dev.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 19 Apr 2010 10:39:33 +0200
+
+gobject-introspection (0.6.9-1) unstable; urgency=low
+
+  [ Emilio Pozuelo Monfort ]
+  * debian/rules:
+    - Abort the build if the test suite doesn't pass.
+
+  [ Sebastian Dröge ]
+  * New upstream release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 25 Mar 2010 17:43:40 +0100
+
+gobject-introspection (0.6.8-1) unstable; urgency=low
+
+  * New upstream release.
+    - Catch OSError when trying to run libtool. Closes: #573798.
+  * debian/watch:
+    - Don't uupdate.
+  * debian/control.in:
+    - Standards-Version is 3.8.4, no changes needed.
+  * debian/patches/01_disable-tests.patch:
+    - Removed. Build the tests again.
+  * debian/rules:
+    - Run the test suite during the build, but don't make it fatal yet.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sun, 14 Mar 2010 16:57:57 +0100
+
+gobject-introspection (0.6.7-3) unstable; urgency=low
+
+  * debian/gobject-introspection.install:
+    + Include autoconf/automake m4 macros and Makefile helpers for
+      gobject-introspection autoconf/automake integration.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 13 Jan 2010 09:10:57 +0100
+
+gobject-introspection (0.6.7-2) unstable; urgency=low
+
+  * debian/control.in:
+  - add libffi-dev as a Dependency for libgirepository1.0-dev
+    (Closes: #564050)
+
+ -- Gustavo Noronha Silva <kov@debian.org>  Thu, 07 Jan 2010 09:30:36 -0200
+
+gobject-introspection (0.6.7-1) unstable; urgency=low
+
+  * New upstream release:
+    + debian/patches/02_home_permissions.patch:
+      - Dropped, merged upstream.
+    + debian/rules:
+      - Update shlibs version for new API.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 06 Jan 2010 07:36:50 +0100
+
+gobject-introspection (0.6.5-4) unstable; urgency=low
+
+  * Run dh_girepository in binary-predeb so that permissions are fixed
+    before. Closes: #551529.
+
+ -- Josselin Mouette <joss@debian.org>  Mon, 19 Oct 2009 08:14:55 +0200
+
+gobject-introspection (0.6.5-3) unstable; urgency=low
+
+  * Remove obsolete statement regarding a dropped package.
+  * Switch to python-support, the dependencies created by python-central
+    are broken.
+  * Introduce debhelper script, dh_girepository.
+    + Install it in /usr/bin.
+  * policy.txt: ship the GObject introspection mini policy.
+  * Rename packages and rearrange files according to it.
+  * Fix sections accordingly.
+
+ -- Josselin Mouette <joss@debian.org>  Sun, 18 Oct 2009 11:57:20 +0200
+
+gobject-introspection (0.6.5-2) unstable; urgency=low
+
+  * 02_home_permissions.patch: new patch. Do not crash when $HOME is not
+    writable. Closes: #549126.
+  * Fix spelling errors in copyright.
+
+ -- Josselin Mouette <joss@debian.org>  Thu, 01 Oct 2009 09:49:46 +0200
+
+gobject-introspection (0.6.5-1) unstable; urgency=low
+
+  * New upstream release:
+    + debian/rules:
+      - Update shlibs version to 0.6.5.
+  * debian/control.in:
+    + Update Standards-Version to 3.8.3.
+
+ -- Sebastian Dröge <slomo@debian.org>  Sat, 05 Sep 2009 07:31:58 +0200
+
+gobject-introspection (0.6.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Gustavo Noronha Silva <kov@debian.org>  Wed, 01 Jul 2009 09:45:28 -0300
+
+gobject-introspection (0.6.3-1) unstable; urgency=low
+
+  * New upstream release
+  * debian/control, debian/python-giscanner.install,
+    debian/gobject-introspection.install:
+  - python modules were made private with this release; I consulted with
+    upstream and decided that following suit, and removing
+    python-giscanner was in order
+  * debian/control.in:
+  - Make libgirepository1.0-dev conflict with and replace
+    libgirepository-dev
+  - Add a gobject-introspection-freedesktop package to hold the
+    freedesktop-related modules which are also being shipped in this
+    source package now.
+
+ -- Gustavo Noronha Silva <kov@debian.org>  Wed, 24 Jun 2009 17:03:09 -0300
+
+gobject-introspection (0.6.2-1) unstable; urgency=low
+
+  * New upstream release:
+    + debian/control.in,
+      debian/*.install,
+      debian/rules:
+      - All libraries and directories now have 1.0 in their filenames,
+        change everything accordingly.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 22 Jan 2009 07:43:46 +0100
+
+gobject-introspection (0.6.1-2) unstable; urgency=low
+
+  * debian/rules:
+    + Set HOME to the builddir and clean it correctly as it's used
+      for a cache directory and otherwise fails on buildds with non-writable
+      HOME.
+
+ -- Sebastian Dröge <slomo@debian.org>  Sat, 06 Dec 2008 21:19:19 +0100
+
+gobject-introspection (0.6.1-1) unstable; urgency=low
+
+  [ Loic Minier ]
+  * Extract libgirepository package name from control.
+  * Use $(cdbs_curpkg).
+
+  [ Sebastian Dröge ]
+  * New upstream release:
+    + debian/control.in:
+      - Update build-depends.
+
+ -- Sebastian Dröge <slomo@debian.org>  Thu, 27 Nov 2008 08:23:51 +0100
+
+gobject-introspection (0.6.0-1) unstable; urgency=low
+
+  * Initial version (Closes: #497451).
+
+ -- Sebastian Dröge <slomo@debian.org>  Sat, 01 Nov 2008 12:16:00 +0100

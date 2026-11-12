@@ -1,0 +1,3 @@
+debian/deb-gir-tool.1
+debian/dh_girepository.1
+debian/g-ir-inspect.1

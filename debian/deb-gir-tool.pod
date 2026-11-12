@@ -1,0 +1,224 @@
+=encoding utf8
+
+=for comment
+Copyright 2025 Simon McVittie
+SPDX-License-Identifier: LGPL-2.1-or-later
+
+=head1 NAME
+
+deb-gir-tool - Debian packaging helper for GObject-Introspection GIR XML
+
+=head1 SYNOPSIS
+
+B<deb-gir-tool> I<COMMAND>
+[B<--upstream-paths>]
+[B<--verbose>]
+[B<--zero-terminated>]
+[I<OPTION>...]
+
+B<deb-gir-tool print-search-path> [I<COMMON_OPTION>...]
+
+B<deb-gir-tool find>
+[B<--if-exists>]
+[B<--target-directory=>I<DIR>]
+[B<--with-dependencies>]
+[I<COMMON_OPTION>...]
+I<NAMESPACE>B<->I<VER> [I<NAMESPACE>B<->I<VER>...]
+
+=head1 DESCRIPTION
+
+B<deb-gir-tool> manipulates GObject-Introspection GIR XML files
+(B<.gir> files)
+in various ways that can be helpful during Debian packaging.
+
+This tool is Debian-specific and should not be assumed to be present on
+non-Debian-derived operating systems.
+
+On Debian and Debian derivatives, depend or build-depend on
+C<< gobject-introspection (>= 1.86.0-3~) >>
+for access to this tool.
+
+=head1 COMMON OPTIONS
+
+These options are accepted by all commands.
+
+=over 4
+
+=item B<--upstream-paths>
+
+By default,
+B<deb-gir-tool> only shows or searches paths that are appropriate for
+GIR XML packaged in B<.deb> packages,
+currently F</usr/share/gir-1.0> and
+F</usr/lib/I<${DEB_HOST_MULTIARCH}>/gir-1.0>.
+With the B<--upstream-paths> option,
+instead B<deb-gir-tool> mimics the behaviour of upstream tools like
+L<gi-compile-repository(1)> and L<g-ir-scanner(1)>,
+showing or searching all search paths including those configured locally
+by the user or the sysadmin.
+
+=item B<--verbose>, B<-v>
+
+Show more informational output on standard error.
+C<deb-gir-tool find --verbose --with-dependencies> shows which dependencies
+were a result of which modules,
+and C<deb-gir-tool find --verbose --target-directory=DIR>
+shows which files it has copied.
+
+If repeated, enable debug-level logging on standard error.
+
+=item B<--zero-terminated>, B<-z>
+
+For commands that normally output a series of items one per line,
+terminate each item with a zero byte instead of a newline,
+like C<sed -z>.
+
+=back
+
+=head1 COMMANDS
+
+=head2 find
+
+Locate GIR XML and act on each file found.
+By default,
+each filename found is printed on standard output followed by a newline,
+or a zero byte if the B<--zero-terminated> option was used.
+Each namespace/version pair found is only shown or copied once,
+even if it appears on the command-line more than once.
+
+This command requires one or more non-option arguments,
+each consisting of a namespace, a dash and an API version number,
+for example B<GLib-2.0>, B<Gtk-4.0> or B<Adw-1>.
+
+=head3 ADDITIONAL OPTIONS
+
+=over 4
+
+=item B<--if-exists>
+
+Silently ignore any nonexistent namespaces or versions specified.
+
+=item B<--keep>
+
+If the destination for copying already exists,
+skip copying instead of failing with an error.
+This is only useful in conjunction with B<--target-directory>.
+
+=item B<--overwrite>
+
+Overwrite files instead of failing with an error.
+This is only useful in conjunction with B<--target-directory>.
+
+=item B<--target-directory> I<DIR>
+
+Instead of printing XML files' names on standard output,
+copy the XML files to the given I<DIR>.
+
+=item B<--with-dependencies>
+
+In addition to the modules given on the command-line,
+load each GIR XML file to find its dependencies,
+and show or copy those too.
+This is done recursively: the dependencies of dependencies are included.
+
+=back
+
+=head2 print-search-path
+
+Output the directories that would be searched for GIR XML on standard output.
+Each directory name is followed by a newline,
+or a zero byte if the B<--zero-terminated> option was used.
+
+This command does not accept any non-option arguments or additional options.
+
+=head1 ENVIRONMENT
+
+=over 4
+
+=item DEB_HOST_MULTIARCH
+
+If set,
+search paths that would be appropriate for the given
+architecture,
+instead of the architecture for which B<deb-gir-tool> was compiled.
+If it is run from B<debian/rules> this will typically happen automatically.
+
+=item DEBUG_INVOCATION
+
+If set to a non-empty value,
+show verbose log messages on standard error,
+similar to C<-v -v>.
+
+=item G_MESSAGES_DEBUG
+
+If set to a non-empty list of space-separated log domains,
+show verbose log messages on standard error for the given log domains
+(see GLib documentation for details).
+A value of B<all> is typical.
+
+=item GI_GIR_PATH
+
+Colon-separated list of paths to prepend to the search path
+if the B<--upstream-paths> option was used.
+
+=item XDG_DATA_HOME, XDG_DATA_DIRS
+
+Used to form the search path according to the
+freedesktop.org Base Directory specification
+if the B<--upstream-paths> option was used.
+
+=back
+
+=head1 OUTPUT
+
+Machine-readable output is emitted on standard output.
+See the description of each command for details of the format.
+
+Human-readable diagnostic information may be emitted on standard error.
+It should not be parsed.
+
+=head1 EXIT STATUS
+
+=over 4
+
+=item Z<>0
+
+The tool ran successfully.
+
+=item Z<>1
+
+An error occurred.
+
+=item Z<>2
+
+The command-line arguments were invalid or not understood.
+
+=back
+
+=head1 EXAMPLES
+
+Show the absolute path where L<gi-compile-repository(1)> would find
+B<GLib-2.0.gir> if referenced as a dependency:
+
+    deb-gir-tool find --upstream-paths GLib-2.0
+
+Show where L<arm-linux-gnueabi-gi-compile-repository(1)>,
+the version of L<gi-compile-repository(1)> for the B<armel> architecture,
+would find B<GLib-2.0.gir>,
+ignoring local configuration and using only standard OS paths:
+
+    dpkg-architecture -aarmel -c deb-gir-tool find GLib-2.0
+
+Copy B<Adw-1.gir> and all of its recursive dependencies such as
+B<Gtk-4.0.gir> and B<GLib-2.0.gir> to the current working directory:
+
+    deb-gir-tool find -v --with-dependencies --target-directory=. Adw-1
+
+=head1 SEE ALSO
+
+L<gi-compile-repository(1)>,
+L<g-ir-compile(1)>,
+L<g-ir-scanner(1)>
+
+=for comment
+vim:set sw=4 sts=4 et:

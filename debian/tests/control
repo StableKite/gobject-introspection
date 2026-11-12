@@ -1,0 +1,31 @@
+Tests: build
+Restrictions: superficial
+# deliberately avoid depending on gir1.2-glib-2.0 and friends; gir1.2-gtk-3.0
+# ought to pull these in
+Depends: build-essential,
+         gir1.2-gtk-3.0,
+         libgirepository-1.0-dev,
+         pkgconf,
+
+Tests: libgirepository1.0-dev
+Restrictions: superficial
+Depends: build-essential,
+         gir1.2-gtk-3.0,
+         libgirepository1.0-dev,
+         pkgconf,
+
+Tests: deb-gir-tool.t
+Restrictions: allow-stderr
+Depends: gir1.2-gio-2.0-dev,
+         gobject-introspection,
+         libipc-run3-perl,
+         libstring-shellquote-perl,
+         perl,
+
+Tests: tools
+Restrictions: allow-stderr
+Depends: file (>= 1:5.25),
+         gir1.2-cairo-1.0-dev,
+         gir1.2-gio-2.0-dev,
+         gobject-introspection,
+         libcairo2-dev,

@@ -1,0 +1,174 @@
+========================================
+Porting away from libgirepository1.0-dev
+========================================
+
+In Debian 13, we split up the libgirepository1.0-dev package into
+several smaller packages to help to make cross-compiling possible,
+leaving libgirepository1.0-dev as a transitional/compatibility package.
+
+Now that the Debian 14 release cycle has started, the
+libgirepository1.0-dev package should be considered to be deprecated.
+
+There are several replacements, depending on what functionality
+the dependent package wants: it is not a completely mechanical 1:1
+replacement.
+
+A typical example package
+-------------------------
+
+GNOME's libmanette is a simple example of a library that provides
+gobject-introspection bindings, which had not been updated for a
+while. A gobject-introspection maintainer converted it to current
+conventions here, with extra-verbose commit messages to illustrate why:
+https://salsa.debian.org/gnome-team/libmanette/-/merge_requests/6
+
+Running the gobject-introspection tools
+---------------------------------------
+
+For the tools, please depend or build-depend on gobject-introspection
+instead. If releases older than Debian 13 and Ubuntu 24.04 are relevant
+for the package you're looking at, you'll need to depend on at least
+version 1.80 [1], and revert that change when backporting to older
+releases.
+
+You will usually also need to depend on at least one package matching
+gir1.2-*-dev (below).
+
+Please do not depend or build-depend on gobject-introspection-bin: it
+is a private implementation detail. To use the tools in that package,
+depend or build-depend on gobject-introspection instead.
+
+Access to GIR XML (*.gir files)
+-------------------------------
+
+To get access to the GIR XML that was previously in
+libgirepository1.0-dev, please depend or build-depend on the appropriate
+gir1.2-*-dev package. For example, if the package needs Gio-2.0.gir at
+build time, build-depend on the gir1.2-gio-2.0-dev package.
+
+For most packages, you can find out which gir1.2-*-dev dependencies are
+needed by reading the build log: dh_girepository will emit a warning for
+each missing Build-Depends.
+
+We provide a series of predictably-named real and virtual packages for
+GIR XML. The naming convention is the same as for typelibs, but add
+"-dev" at the end. Ideally, dependent packages should always use the
+systematic names, like a GIR version of "include what you use":
+
+- if you need Foo-23.typelib, (build-)depend on gir1.2-foo-23
+- if you need Foo-23.gir, (build-)depend on gir1.2-foo-23-dev
+
+For dependencies on other libraries' GIR XML, please depend or
+build-depend on the systematically-named package if it already exists
+(but not all libraries provide those yet).
+
+You can help dependent packages by adding ${gir:Provides}
+to your -dev package, which will resolve the lintian warning
+<https://lintian.debian.org/tags/gir-package-name-does-not-match.html>.
+
+Typically the required GIR XML files are those that are given to the
+--include argument to gir-scanner, for example these all indicate that
+a Build-Depends on gir1.2-foo-23-dev is desirable:
+
+    # Command-line
+    g-ir-scanner ... --include=Foo-23 ...
+
+    # Autotools
+    Bar_42_gir_INCLUDES = ... Foo-23 ...
+
+    # Meson
+    gnome.generate_gir(..., includes: [..., 'Foo-23', ...], ...)
+
+Less commonly, GIR XML might also be required by tools like cppgir or
+vala-gen-introspect.
+
+Access to GIR XML via /usr/share
+--------------------------------
+
+gir1.2-glib-2.0-dev installs GLib-2.0.gir into an architecture-specific
+location (/usr/lib/MULTIARCH/gir-1.0/GLib-2.0.gir) to allow
+co-installation for multiple architectures. This was necessary because
+it describes some macros that take different values on each architecture.
+
+Similarly, recent versions of libgstreamer1.0-dev and
+libgstreamer-plugins-base1.0-dev install their GIR XML files Gst-1.0.gir
+and GstAudio-1.0.gir into /usr/lib/${DEB_HOST_MULTIARCH}/gir-1.0,
+for the same reason.
+
+Many GObject-Introspection-based tools automatically support that location
+and do not need special workarounds:
+
+- the tools in the gobject-introspection package
+- the tools in the girepository-tools package
+- gi-docgen
+- haskell-haskell-gi
+- valac
+
+but some tools only look for /usr/share/gir-1.0/*.gir:
+
+- blueprint-compiler (#1060916)
+- cppgir (#1060906)
+- gir-to-d (#1060909)
+- debian/rules in Rust packages like rust-atk-0.18
+- maybe others
+
+For backwards compat, libgirepository1.0-dev provides a symbolic link
+/usr/share/gir-1.0/GLib-2.0.gir to make these tools continue to work,
+but that makes it impossible for it to be Multi-Arch co-installable,
+which is one of the reasons we now want to remove it.
+
+When using these tools without libgirepository1.0-dev, it might be
+necessary to
+
+    export GI_GIR_PATH=/usr/lib/${DEB_HOST_MULTIARCH}/gir-1.0
+
+or use command-line options like
+
+    girtod --gir-directory=/usr/lib/${DEB_HOST_MULTIARCH}/gir-1.0
+
+or some similar workaround.
+
+In gobject-introspection (>= 1.86.0-5), there is a new tool
+deb-gir-tool(1) which can be used to locate GIR XML:
+
+    deb-gir-tool find Gtk-4.0 Adw-1
+
+or even copy the files to a local directory:
+
+    deb-gir-tool find -v --with-dependencies --target-directory=. Adw-1
+
+which might be useful when dealing with tools that do not support
+/usr/lib/${DEB_HOST_MULTIARCH}/gir-1.0 natively.
+
+Linking to libgirepository-1.0
+------------------------------
+
+A few packages, mostly language bindings like gjs and pygobject, want to
+link to libgirepository-1.0 and call its functions. For these packages,
+please depend or build-depend on libgirepository-1.0-dev:
+
+- OK:         libgirepository-1.0-dev (with two dashes)
+- deprecated: libgirepository1.0-dev (with only one dash)
+
+Most packages do not need to do this. Typically packages that do this
+will have:
+
+    #include <girepository.h>
+
+somewhere in their source.
+
+libgirepository-1.0-dev has been superseded by libgirepository-2.0-dev
+(part of src:glib2.0), which has had some incompatible API changes.
+Upstream projects that use libgirepository-1.0 should eventually port
+to libgirepository-2.0 (for example gjs >= 1.84 and pygobject >= 3.52 have
+done this), but this needs to be done with some coordination to avoid mixing
+the two versions in the same process, which will not work.
+
+Footnotes
+---------
+
+[1] Strictly speaking 1.78.1-7 is probably enough, but a
+    versioned dependency on 1.80 is simpler, easier to remember, and
+    equally backward-compatible in practice.
+    Debian 13 and Ubuntu 24.04 are new enough, with a version >= 1.80.
+    Debian 12 and Ubuntu 22.04 are too old, with a version < 1.78.
